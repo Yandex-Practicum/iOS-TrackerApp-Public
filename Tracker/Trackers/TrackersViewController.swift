@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
+    private var trackerStore = TrackerStore()
+    private var trackerRecordStore = TrackerRecordStore()
     private var trackers: [Tracker] = []
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
@@ -93,6 +95,12 @@ final class TrackersViewController: UIViewController {
         addSubviews()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        
+        trackerStore.delegate = self
+        trackerRecordStore.delegate = self
+        trackers = trackerStore.trackers
+        completedTrackers = trackerRecordStore.trackerRecords
+        
         let category = TrackerCategory(header: "Домашние дела", trackers: trackers) // тестовая категория для отображения
         categories.append(category)
         showFirstStubScreen()
@@ -160,6 +168,11 @@ final class TrackersViewController: UIViewController {
     }
     
     private func filterTrackers() {
+        filterVisibleCategories()
+        showSecondStubScreen()
+        collectionView.reloadData()
+    }
+    private func filterVisibleCategories() {
         visibleCategories = categories.map { category in
             TrackerCategory(header: category.header, trackers: category.trackers.filter { tracker in
                 let scheduleContains = tracker.schedule?.contains { day in
@@ -175,7 +188,12 @@ final class TrackersViewController: UIViewController {
         .filter { category in
             !category.trackers.isEmpty
         }
-        showSecondStubScreen()
+    }
+}
+
+extension TrackersViewController: TrackerStoreDelegate {
+    func store() {
+        trackers = trackerStore.trackers
         collectionView.reloadData()
     }
 }
@@ -195,7 +213,7 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: - TrackersActions
 extension TrackersViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        self.trackers.append(tracker)
+        try! self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)
@@ -288,6 +306,13 @@ extension TrackersViewController: UICollectionViewDataSource {
 }
 
 // MARK: - TrackerCellDelegate
+extension TrackersViewController: TrackerRecordStoreDelegate {
+    func storeRecord() {
+        completedTrackers = trackerRecordStore.trackerRecords
+        collectionView.reloadData()
+    }
+}
+
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         let currentDate = Date()
@@ -295,18 +320,17 @@ extension TrackersViewController: TrackerCellDelegate {
         let calendar = Calendar.current
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             let trackerRecord = TrackerRecord(id: id, date: selectedDate)
-            completedTrackers.append(trackerRecord)
-            collectionView.reloadItems(at: [indexPath])
+            try! self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
         } else {
             return
         }
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
-        completedTrackers.removeAll { trackerRecord in
-            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
+        let toRemove = completedTrackers.first {
+            isSameTrackerRecord(trackerRecord: $0, id: id)
         }
-        collectionView.reloadItems(at: [indexPath])
+        try! self.trackerRecordStore.removeTrackerRecord(toRemove)
     }
 }
 
