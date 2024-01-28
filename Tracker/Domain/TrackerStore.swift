@@ -4,9 +4,8 @@
 //
 //  Created by Никита Гончаров on 22.01.2024.
 //
-
-import UIKit
 import CoreData
+import UIKit
 
 protocol TrackerStoreDelegate: AnyObject {
     func store() -> Void
@@ -15,14 +14,15 @@ protocol TrackerStoreDelegate: AnyObject {
 final class TrackerStore: NSObject {
     private var context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+        
     private let uiColorMarshalling = UIColorMarshalling()
-    
+    private let trackerStore = TrackerStore()
     weak var delegate: TrackerStoreDelegate?
     
     var trackers: [Tracker] {
         guard
             let objects = self.fetchedResultsController.fetchedObjects,
-            let trackers = try? objects.map({ try self.tracker(from: $0)})
+            let trackers = try? objects.map({ try self.tracker(from: $0) })
         else { return [] }
         return trackers
     }

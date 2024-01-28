@@ -9,7 +9,7 @@ import UIKit
 
 final class AddTrackerViewController: UIViewController {
     
-    var trackersViewController: TrackersViewController?
+   weak var trackersViewController: TrackersViewController?
     
     private lazy var header: UILabel = {
         let header = UILabel()

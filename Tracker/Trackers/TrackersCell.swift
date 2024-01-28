@@ -73,6 +73,13 @@ final class TrackerCell: UICollectionViewCell {
         return trackerEmoji
     }()
     
+    let pinnedTracker: UIImageView = {
+        let pinnedTracker = UIImageView()
+        pinnedTracker.image = UIImage(named: "Pin")
+        pinnedTracker.translatesAutoresizingMaskIntoConstraints = false
+        return pinnedTracker
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -116,6 +123,7 @@ final class TrackerCell: UICollectionViewCell {
         contentView.addSubview(emojiBackground)
         contentView.addSubview(trackerEmoji)
         contentView.addSubview(trackerDescription)
+        contentView.addSubview(pinnedTracker)
     }
     
     private func formatCompletedDays(_ completedDays: Int) -> String {
@@ -145,5 +153,8 @@ final class TrackerCell: UICollectionViewCell {
         } else {
             delegate?.completeTracker(id: trackerId, at: indexPath)
         }
+    }
+    func update(with pinned: UIImage) {
+        pinnedTracker.image = pinned
     }
 }

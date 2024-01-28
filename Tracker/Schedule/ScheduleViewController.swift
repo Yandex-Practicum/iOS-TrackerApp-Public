@@ -120,6 +120,9 @@ extension ScheduleViewController: UITableViewDelegate {
 
 // MARK: - UITableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 7
     }
@@ -134,7 +137,7 @@ extension ScheduleViewController: UITableViewDataSource {
     }
 }
 
-enum WeekDay: Int, CaseIterable {
+enum WeekDay: Int, CaseIterable, Codable {
     case monday = 2
     case tuesday = 3
     case wednesday = 4
@@ -161,4 +164,22 @@ enum WeekDay: Int, CaseIterable {
             return "Воскресенье"
         }
     }
+var shortDaysName: String {
+    switch self {
+    case .monday:
+        return "Пн"
+    case .tuesday:
+        return "Вт"
+    case .wednesday:
+        return "Ср"
+    case .thursday:
+        return "Чт"
+    case .friday:
+        return "Пт"
+    case .saturday:
+        return "Сб"
+    case .sunday:
+        return "Вс"
+    }
+}
 }

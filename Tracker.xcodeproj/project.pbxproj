@@ -21,6 +21,8 @@
 		4B1282E52B5F0CBB00F93D6D /* EventColorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1282E42B5F0CBB00F93D6D /* EventColorHeader.swift */; };
 		4B1A328A2B607213004D410D /* TrackersEntity.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A32882B607213004D410D /* TrackersEntity.xcdatamodeld */; };
 		4B1A328C2B6080E0004D410D /* IrregularEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A328B2B6080E0004D410D /* IrregularEventViewController.swift */; };
+		4B349B992B63D77B00BD3416 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B349B982B63D77B00BD3416 /* CategoryViewController.swift */; };
+		4B349B9B2B64326F00BD3416 /* DaysValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B349B9A2B64326F00BD3416 /* DaysValueTransformer.swift */; };
 		4B9C35282B5C44E500D21F2F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9C35272B5C44E500D21F2F /* AppDelegate.swift */; };
 		4B9C352A2B5C44E500D21F2F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9C35292B5C44E500D21F2F /* SceneDelegate.swift */; };
 		4B9C35342B5C44E700D21F2F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B9C35332B5C44E700D21F2F /* Assets.xcassets */; };
@@ -56,6 +58,8 @@
 		4B1282E42B5F0CBB00F93D6D /* EventColorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventColorHeader.swift; sourceTree = "<group>"; };
 		4B1A32892B607213004D410D /* TrackersEntity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackersEntity.xcdatamodel; sourceTree = "<group>"; };
 		4B1A328B2B6080E0004D410D /* IrregularEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IrregularEventViewController.swift; sourceTree = "<group>"; };
+		4B349B982B63D77B00BD3416 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		4B349B9A2B64326F00BD3416 /* DaysValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysValueTransformer.swift; sourceTree = "<group>"; };
 		4B9C35242B5C44E500D21F2F /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B9C35272B5C44E500D21F2F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B9C35292B5C44E500D21F2F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -109,6 +113,7 @@
 				4B1282D22B5F055F00F93D6D /* TrackerCategoryStore.swift */,
 				4B1282D42B5F057200F93D6D /* TrackerRecordStore.swift */,
 				4B1282D62B5F059C00F93D6D /* UIColorMarshalling.swift */,
+				4B349B9A2B64326F00BD3416 /* DaysValueTransformer.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -119,6 +124,14 @@
 				4B1A32882B607213004D410D /* TrackersEntity.xcdatamodeld */,
 			);
 			path = CoreDate;
+			sourceTree = "<group>";
+		};
+		4B349B972B63D75B00BD3416 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				4B349B982B63D77B00BD3416 /* CategoryViewController.swift */,
+			);
+			path = Category;
 			sourceTree = "<group>";
 		};
 		4B9C351B2B5C44E500D21F2F = {
@@ -142,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				4B9D6BB02B5D6D2F00554FFE /* ViewController.swift */,
+				4B349B972B63D75B00BD3416 /* Category */,
 				4B1282CF2B5F040600F93D6D /* Domain */,
 				4B9D6B9B2B5D680900554FFE /* TabBar */,
 				4B9D6B942B5D66C600554FFE /* Trackers */,
@@ -333,6 +347,8 @@
 				4B1282D72B5F059C00F93D6D /* UIColorMarshalling.swift in Sources */,
 				4B9D6BAB2B5D6B7A00554FFE /* ScheduleViewCell.swift in Sources */,
 				4B9C355C2B5C633900D21F2F /* StatisticViewController.swift in Sources */,
+				4B349B9B2B64326F00BD3416 /* DaysValueTransformer.swift in Sources */,
+				4B349B992B63D77B00BD3416 /* CategoryViewController.swift in Sources */,
 				4B1282D52B5F057200F93D6D /* TrackerRecordStore.swift in Sources */,
 				4B1282D32B5F055F00F93D6D /* TrackerCategoryStore.swift in Sources */,
 				4B1282E52B5F0CBB00F93D6D /* EventColorHeader.swift in Sources */,

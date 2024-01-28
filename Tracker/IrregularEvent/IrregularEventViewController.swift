@@ -11,7 +11,7 @@ final class IrregularEventViewController: UIViewController {
     
     let irregularEventCellReuseIdentifier = "IrregularEventTableViewCell"
     var trackersViewController: TrackersActions?
-    
+    private let addCategoryViewController = CategoryViewController()
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
     private let colors: [UIColor] = [

@@ -20,8 +20,9 @@ final class CreateTrackerViewController: UIViewController {
     
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
-    
+    private var selectedCategory: String?
     private var selectedDays: [WeekDay] = []
+    private let addCategoryViewController = CategoryViewController()
     private let colors: [UIColor] = [
         .ypColorSelection1, .ypColorSelection2, .ypColorSelection3,
         .ypColorSelection4, .ypColorSelection5, .ypColorSelection6,
@@ -238,7 +239,6 @@ final class CreateTrackerViewController: UIViewController {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
-
 // MARK: - SelectedDays
 extension CreateTrackerViewController: SelectedDays {
     func save(indicies: [Int]) {
@@ -283,11 +283,31 @@ extension CreateTrackerViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? CreateTrackerViewCell else { return UITableViewCell() }
+        
         if indexPath.row == 0 {
-            cell.update(with: "Категория")
+            var title = "Категория"
+            if let selectedCategory = selectedCategory {
+                title += "\n" + selectedCategory
+            }
+            cell.update(with: title)
         } else if indexPath.row == 1 {
-            cell.update(with: "Расписание")
+            var subtitle = ""
+            
+            if !selectedDays.isEmpty {
+                if selectedDays.count == 7 {
+                    subtitle = "Каждый день"
+                } else {
+                    subtitle = selectedDays.map { $0.shortDaysName }.joined(separator: ", ")
+                }
+            }
+            
+            if !subtitle.isEmpty {
+                cell.update(with: "Расписание\n" + subtitle)
+            } else {
+                cell.update(with: "Расписание")
+            }
         }
+        
         return cell
     }
 }
