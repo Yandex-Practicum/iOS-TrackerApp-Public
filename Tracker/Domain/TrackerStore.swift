@@ -13,10 +13,23 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject {
     private var context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+    private lazy var fetchedResultsController = {
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCoreData.id, ascending: true)
+        ]
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        try? controller.performFetch()
+        return controller
+    }()
         
     private let uiColorMarshalling = UIColorMarshalling()
-    private let trackerStore = TrackerStore()
+//    private let trackerStore = TrackerStore()
     weak var delegate: TrackerStoreDelegate?
     
     var trackers: [Tracker] {
@@ -27,31 +40,23 @@ final class TrackerStore: NSObject {
         return trackers
     }
     
+    // MARK: - Initializers
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).context
-        try! self.init(context: context)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        let context = appDelegate.persistentContainer.viewContext
+        self.init(context: context)
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
-        
-        let fetch = TrackerCoreData.fetchRequest()
-        fetch.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCoreData.id, ascending: true)
-        ]
-        let controller = NSFetchedResultsController(
-            fetchRequest: fetch,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
+        fetchedResultsController.delegate = self
     }
     
-    func addNewTracker(_ tracker: Tracker) throws {
+    func addNewTracker(_ tracker: Tracker) throws -> TrackerCoreData {
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
         trackerCoreData.title = tracker.title
@@ -61,6 +66,7 @@ final class TrackerStore: NSObject {
             $0.rawValue
         }
         try context.save()
+        return trackerCoreData
     }
     
     func tracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {

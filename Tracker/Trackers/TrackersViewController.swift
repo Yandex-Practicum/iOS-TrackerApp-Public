@@ -9,7 +9,7 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
-    private var trackerStore: TrackerStore?
+    private var trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private var trackerRecordStore = TrackerRecordStore()
     private var trackers: [Tracker] = []
@@ -97,9 +97,9 @@ final class TrackersViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        trackerStore?.delegate = self
+        trackerStore.delegate = self
         trackerRecordStore.delegate = self
-        trackers = trackerStore!.trackers
+        trackers = trackerStore.trackers
         completedTrackers = trackerRecordStore.trackerRecords
         
         let category = TrackerCategory(header: "Домашние дела", trackers: trackers) // тестовая категория для отображения
@@ -194,7 +194,7 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: TrackerStoreDelegate {
     func store() {
-        trackers = trackerStore!.trackers
+        trackers = trackerStore.trackers
         collectionView.reloadData()
     }
 }
@@ -215,7 +215,7 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: - TrackersActions
 extension TrackersViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        try! self.trackerStore?.addNewTracker(tracker)
+        try? self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)

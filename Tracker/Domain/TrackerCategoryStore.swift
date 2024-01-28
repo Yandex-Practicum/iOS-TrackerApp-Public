@@ -22,7 +22,20 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 final class TrackerCategoryStore: NSObject {
 
     private var context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
+    private lazy var fetchedResultsController = {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.header, ascending: true)
+        ]
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        try? controller.performFetch()
+        return controller
+    }()
     
     private let uiColorMarshalling = UIColorMarshalling()
     private let trackerStore = TrackerStore()
@@ -38,27 +51,18 @@ final class TrackerCategoryStore: NSObject {
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).context
-           try! self.init(context: context)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        let context = appDelegate.persistentContainer.viewContext
+        self.init(context: context)
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
-        
-        let fetch = TrackerCategoryCoreData.fetchRequest()
-        fetch.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.header, ascending: true)
-        ]
-        let controller = NSFetchedResultsController(
-            fetchRequest: fetch,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
+        fetchedResultsController.delegate = self
     }
     
     func addNewCategory(_ category: TrackerCategory) throws {
@@ -68,19 +72,24 @@ final class TrackerCategoryStore: NSObject {
             let trackerCD = TrackerCoreData(context: self.context)
             trackerCD.id = $0.id
             trackerCD.category = trackerCategoryCoreData
+            return trackerCD
         }
         try context.save()
     }
     
     func addTrackerToCategory(to header: String?, tracker: Tracker) throws {
-        guard let fromDb = try self.fetchTrackerCategory(with: header) else { fatalError() }
+        let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+        guard let fromDb = try self.fetchTrackerCategory(with: header) else {
+            fatalError()
+        }
         fromDb.trackers = trackerCategories.first {
             $0.header == header
         }?.trackers
             .compactMap {
-                let trackerCD = TrackerCoreData(context: self.context)
+                let trackerCD = TrackerCoreData(context: context)
                 trackerCD.id = $0.id
                 trackerCD.category = trackerCategoryCoreData
+                return trackerCD
             }
             try context.save()
     }

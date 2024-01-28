@@ -14,7 +14,20 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 
 final class TrackerRecordStore: NSObject {
     private var context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
+    private lazy var fetchedResultsController = {
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerRecordCoreData.id , ascending: true)
+        ]
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        try? controller.performFetch()
+        return controller
+    }()
     private let uiColorMarshalling = UIColorMarshalling()
     
     weak var delegate: TrackerRecordStoreDelegate?
@@ -33,26 +46,13 @@ final class TrackerRecordStore: NSObject {
             return
         }
         let context = appDelegate.persistentContainer.viewContext
-        try! self.init(context: context)
+        self.init(context: context)
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
-        
-        let fetch = TrackerRecordCoreData.fetchRequest()
-        fetch.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: true)
-        ]
-        let controller = NSFetchedResultsController(
-            fetchRequest: fetch,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
+        fetchedResultsController.delegate = self
     }
     
     func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
