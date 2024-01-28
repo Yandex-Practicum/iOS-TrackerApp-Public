@@ -65,7 +65,11 @@ final class TrackerStore: NSObject {
         trackerCoreData.schedule = tracker.schedule?.map {
             $0.rawValue
         }
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            print(error)
+        }
         return trackerCoreData
     }
     
