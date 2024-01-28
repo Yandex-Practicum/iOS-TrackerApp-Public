@@ -322,8 +322,11 @@ extension TrackersViewController: TrackerCellDelegate {
         let selectedDate = datePicker.date
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             let trackerRecord = TrackerRecord(id: id, date: selectedDate)
-            try! self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            try!
+            self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
             collectionView.reloadItems(at: [indexPath])
+        } else {
+            return
         }
     }
     

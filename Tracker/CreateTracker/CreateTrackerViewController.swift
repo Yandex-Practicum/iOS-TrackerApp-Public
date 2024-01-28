@@ -225,7 +225,7 @@ final class CreateTrackerViewController: UIViewController {
     @objc private func cancelButtonTapped() {
         dismiss(animated: true)
     }
-    
+    // TODO: Добавить сброс заполненных данных
     @objc private func createButtonTapped() {
         guard let text = addTrackerName.text, !text.isEmpty,
               let color = selectedColor,
@@ -244,6 +244,7 @@ extension CreateTrackerViewController: SelectedDays {
     func save(indicies: [Int]) {
         for index in indicies {
             self.selectedDays.append(WeekDay.allCases[index])
+            self.trackersTableView.reloadData()
         }
     }
 }
