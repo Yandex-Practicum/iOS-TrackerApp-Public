@@ -113,7 +113,7 @@ final class TrackersViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.allowsMultipleSelection = false
         searchTrackers.delegate = self
-        
+        filterTrackers()
         NSLayoutConstraint.activate([
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             header.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -215,7 +215,7 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: - TrackersActions
 extension TrackersViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        try? self.trackerStore.addNewTracker(tracker)
+        self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)
@@ -322,7 +322,7 @@ extension TrackersViewController: TrackerCellDelegate {
         let selectedDate = datePicker.date
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             let trackerRecord = TrackerRecord(id: id, date: selectedDate)
-            try!
+        try?
             self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
             collectionView.reloadItems(at: [indexPath])
         } else {

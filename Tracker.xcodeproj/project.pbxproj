@@ -41,6 +41,7 @@
 		4B9D6BAF2B5D6C6200554FFE /* IrregularEventViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9D6BAE2B5D6C6200554FFE /* IrregularEventViewCell.swift */; };
 		4B9D6BB12B5D6D2F00554FFE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9D6BB02B5D6D2F00554FFE /* ViewController.swift */; };
 		4B9D6BB92B5D7BF000554FFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B9D6BB82B5D7BF000554FFE /* LaunchScreen.storyboard */; };
+		4BCC8AF32B6855BB00C399FE /* TrackerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC8AF22B6855BB00C399FE /* TrackerError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		4B9D6BAE2B5D6C6200554FFE /* IrregularEventViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularEventViewCell.swift; sourceTree = "<group>"; };
 		4B9D6BB02B5D6D2F00554FFE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4B9D6BB82B5D7BF000554FFE /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		4BCC8AF22B6855BB00C399FE /* TrackerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				4B1282D42B5F057200F93D6D /* TrackerRecordStore.swift */,
 				4B1282D62B5F059C00F93D6D /* UIColorMarshalling.swift */,
 				4B349B9A2B64326F00BD3416 /* DaysValueTransformer.swift */,
+				4BCC8AF22B6855BB00C399FE /* TrackerError.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -357,6 +360,7 @@
 				4B1A328A2B607213004D410D /* TrackersEntity.xcdatamodeld in Sources */,
 				4B9C352A2B5C44E500D21F2F /* SceneDelegate.swift in Sources */,
 				4B9D6B9E2B5D68A000554FFE /* HeaderSectionView.swift in Sources */,
+				4BCC8AF32B6855BB00C399FE /* TrackerError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

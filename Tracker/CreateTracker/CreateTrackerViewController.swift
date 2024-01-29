@@ -233,7 +233,11 @@ final class CreateTrackerViewController: UIViewController {
             return
         }
         
-        let newTracker = Tracker(id: UUID(), title: text, color: color, emoji: emoji, schedule: self.selectedDays)
+        let newTracker = Tracker(id: UUID(),
+                                 title: text,
+                                 color: color,
+                                 emoji: emoji,
+                                 schedule: self.selectedDays)
         trackersViewController?.appendTracker(tracker: newTracker)
         trackersViewController?.reload()
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -314,6 +318,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
 }
 
 // MARK: - UITextFieldDelegate
+//добавить медот check по данным 
 extension CreateTrackerViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         clearButton.isHidden = textField.text?.isEmpty ?? true

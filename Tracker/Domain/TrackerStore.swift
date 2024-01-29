@@ -56,7 +56,7 @@ final class TrackerStore: NSObject {
         fetchedResultsController.delegate = self
     }
     
-    func addNewTracker(_ tracker: Tracker) throws -> TrackerCoreData {
+    func addNewTracker(_ tracker: Tracker) {
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
         trackerCoreData.title = tracker.title
@@ -70,7 +70,6 @@ final class TrackerStore: NSObject {
         } catch {
             print(error)
         }
-        return trackerCoreData
     }
     
     func tracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
@@ -82,7 +81,7 @@ final class TrackerStore: NSObject {
         else {
             fatalError()
         }
-        return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: schedule.map({ WeekDay(rawValue: $0)!}))
+        return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap({ WeekDay(rawValue: $0)}))
     }
 }
 

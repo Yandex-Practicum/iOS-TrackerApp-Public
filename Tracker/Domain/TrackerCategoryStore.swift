@@ -71,14 +71,13 @@ final class TrackerCategoryStore: NSObject {
         trackerCategoryCoreData.trackers = category.trackers.compactMap {
             let trackerCD = TrackerCoreData(context: self.context)
             trackerCD.id = $0.id
-            trackerCD.category = trackerCategoryCoreData
+//            trackerCD.category = trackerCategoryCoreData
             return trackerCD
         }
         try context.save()
     }
     
     func addTrackerToCategory(to header: String?, tracker: Tracker) throws {
-        let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
         guard let fromDb = try self.fetchTrackerCategory(with: header) else {
             fatalError()
         }
@@ -88,7 +87,7 @@ final class TrackerCategoryStore: NSObject {
             .compactMap {
                 let trackerCD = TrackerCoreData(context: context)
                 trackerCD.id = $0.id
-                trackerCD.category = trackerCategoryCoreData
+//                trackerCD.category = trackerCategoryCoreData
                 return trackerCD
             }
             try context.save()
@@ -98,21 +97,15 @@ final class TrackerCategoryStore: NSObject {
         guard let header = trackerCategoryCoreData.header,
               let trackers = trackerCategoryCoreData.trackers
         else {
-            fatalError()
+            throw TrackerError.defaultError
         }
         return TrackerCategory(header: header, trackers: trackerStore
             .trackers
             .filter { tracker in
-                guard
-                    let firstTracker = trackers
-                        .first(where: { trackerCD in
-                            tracker.id == trackerCD.id
-                        })
-                else {
-                    return false
-                }
-                return true
-            }
+                            trackers.contains(where: { trackerCD in
+                                tracker.id == trackerCD.id
+                            })
+                        }
         )
     }
     func fetchTrackerCategory(with header: String?) throws -> TrackerCategoryCoreData? {
