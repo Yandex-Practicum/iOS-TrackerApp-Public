@@ -27,6 +27,13 @@ class ViewController: UIViewController {
         return label
     }()
     
+    // Контейнер для верхней части (заголовок, поиск)
+    private let topContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Трекеры"
@@ -46,7 +53,7 @@ class ViewController: UIViewController {
         return searchBar
     }()
     
-    // Контейнер для заглушки (картинка + текст)
+    // Контейнер для заглушки
     private let placeholderView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -55,7 +62,7 @@ class ViewController: UIViewController {
     
     private let placeholderImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "star") // Замените на ваше изображение
+        imageView.image = UIImage(named: "star")
         imageView.tintColor = .lightGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -80,22 +87,12 @@ class ViewController: UIViewController {
         return tabBar
     }()
     
-    // Контейнер для верхней части (заголовок, поиск)
-    private let topContainerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        // Устанавливаем кнопку добавления трекера и дату в навигационный бар
         setupNavigationBar()
-        
         setupLayout()
     }
     
@@ -133,7 +130,7 @@ class ViewController: UIViewController {
         
         // Правый элемент: дата
         let dateContainerView = UIView()
-        dateContainerView.backgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
+        dateContainerView.backgroundColor = UIColor(resource: .dateLabelBackground)
         dateContainerView.layer.cornerRadius = 8
         dateContainerView.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -213,7 +210,6 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func addTracker() {
-        // Пока что кнопка не имеет действия, добавим логику позже
         print("Add Tracker tapped")
     }
 }

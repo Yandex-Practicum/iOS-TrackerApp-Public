@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C06ED872C8B061600A5A5F4 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C06ED862C8B061600A5A5F4 /* TrackerCategory.swift */; };
+		1C06ED892C8B064100A5A5F4 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C06ED882C8B064100A5A5F4 /* Tracker.swift */; };
+		1C06ED8B2C8B067B00A5A5F4 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C06ED8A2C8B067B00A5A5F4 /* TrackerRecord.swift */; };
+		1C06ED8D2C8B073300A5A5F4 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C06ED8C2C8B073300A5A5F4 /* TrackersViewController.swift */; };
+		1C06ED902C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C06ED8E2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld */; };
 		1C567E742C8882700023A2BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C567E732C8882700023A2BC /* AppDelegate.swift */; };
 		1C567E762C8882700023A2BC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C567E752C8882700023A2BC /* SceneDelegate.swift */; };
 		1C567E782C8882700023A2BC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C567E772C8882700023A2BC /* ViewController.swift */; };
@@ -16,6 +21,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C06ED862C8B061600A5A5F4 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
+		1C06ED882C8B064100A5A5F4 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		1C06ED8A2C8B067B00A5A5F4 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		1C06ED8C2C8B073300A5A5F4 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
+		1C06ED8F2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerModel.xcdatamodel; sourceTree = "<group>"; };
 		1C567E702C88826F0023A2BC /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C567E732C8882700023A2BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C567E752C8882700023A2BC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +47,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C06ED852C8B05F700A5A5F4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1C06ED8E2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld */,
+				1C06ED882C8B064100A5A5F4 /* Tracker.swift */,
+				1C06ED862C8B061600A5A5F4 /* TrackerCategory.swift */,
+				1C06ED8A2C8B067B00A5A5F4 /* TrackerRecord.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		1C567E672C88826F0023A2BC = {
 			isa = PBXGroup;
 			children = (
@@ -56,12 +77,14 @@
 		1C567E722C88826F0023A2BC /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				1C06ED852C8B05F700A5A5F4 /* Models */,
 				1C567E732C8882700023A2BC /* AppDelegate.swift */,
 				1C567E752C8882700023A2BC /* SceneDelegate.swift */,
 				1C567E772C8882700023A2BC /* ViewController.swift */,
+				1C06ED8C2C8B073300A5A5F4 /* TrackersViewController.swift */,
 				1C567E792C8882700023A2BC /* Main.storyboard */,
-				1C567E7C2C8882730023A2BC /* Assets.xcassets */,
 				1C567E7E2C8882730023A2BC /* LaunchScreen.storyboard */,
+				1C567E7C2C8882730023A2BC /* Assets.xcassets */,
 				1C567E812C8882730023A2BC /* Info.plist */,
 			);
 			path = Tracker;
@@ -140,7 +163,12 @@
 			files = (
 				1C567E782C8882700023A2BC /* ViewController.swift in Sources */,
 				1C567E742C8882700023A2BC /* AppDelegate.swift in Sources */,
+				1C06ED8D2C8B073300A5A5F4 /* TrackersViewController.swift in Sources */,
+				1C06ED892C8B064100A5A5F4 /* Tracker.swift in Sources */,
+				1C06ED872C8B061600A5A5F4 /* TrackerCategory.swift in Sources */,
 				1C567E762C8882700023A2BC /* SceneDelegate.swift in Sources */,
+				1C06ED902C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld in Sources */,
+				1C06ED8B2C8B067B00A5A5F4 /* TrackerRecord.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,8 +326,10 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -307,9 +337,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mybrain.Tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -326,8 +360,10 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -335,9 +371,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mybrain.Tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -363,6 +403,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1C06ED8E2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1C06ED8F2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodel */,
+			);
+			currentVersion = 1C06ED8F2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodel */;
+			path = TrackerModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1C567E682C88826F0023A2BC /* Project object */;
 }
