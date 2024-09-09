@@ -13,20 +13,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        // Инициализация окна с привязкой к windowScene
+
         window = UIWindow(windowScene: windowScene)
-        // Создаем экземпляр нашего ViewController
-        let viewController = ViewController()
-            
-        // Оборачиваем его в UINavigationController
-        let navigationController = UINavigationController(rootViewController: viewController)
-        // Устанавливаем UINavigationController как rootViewController
-        window?.rootViewController = navigationController
-            
-        // Делаем окно видимым
+
+        // Устанавливаем SplashViewController как начальный экран
+        let splashVC = SplashViewController()
+        window?.rootViewController = splashVC
         window?.makeKeyAndVisible()
-        }
+    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
