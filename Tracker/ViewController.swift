@@ -11,20 +11,13 @@ class ViewController: UIViewController {
     
     // MARK: - UI Elements
     
-    private let dateContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(resource: .dateLabelBackground)
-        view.layer.cornerRadius = 8
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "14.12.22" // Здесь нужно будет динамически подставить дату
-        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private let datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .compact
+        picker.locale = Locale(identifier: "ru_RU")
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
     }()
     
     // Контейнер для верхней части (заголовок, поиск)
@@ -49,6 +42,7 @@ class ViewController: UIViewController {
         
         // Убираем разделительные линии сверху и снизу
         searchBar.backgroundImage = UIImage() // Полностью убираем фон и разделители
+        searchBar.searchTextField.layer.masksToBounds = true
         
         return searchBar
     }()
@@ -94,6 +88,9 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
         setupNavigationBar()
         setupLayout()
+        
+        // Добавляем действие для обновления даты
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
     }
     
     // MARK: - Setup Navigation Bar
@@ -128,29 +125,10 @@ class ViewController: UIViewController {
             addButtonContainer.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor)
         ])
         
-        // Правый элемент: дата
-        let dateContainerView = UIView()
-        dateContainerView.backgroundColor = UIColor(resource: .dateLabelBackground)
-        dateContainerView.layer.cornerRadius = 8
-        dateContainerView.addSubview(dateLabel)
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            dateLabel.leadingAnchor.constraint(equalTo: dateContainerView.leadingAnchor, constant: 5.5),
-            dateLabel.trailingAnchor.constraint(equalTo: dateContainerView.trailingAnchor, constant: -5.5),
-            dateLabel.topAnchor.constraint(equalTo: dateContainerView.topAnchor, constant: 6),
-            dateLabel.bottomAnchor.constraint(equalTo: dateContainerView.bottomAnchor, constant: -6)
-        ])
-
-        // Добавляем контейнер для даты в `navigationBar`
-        navigationBar.addSubview(dateContainerView)
-        dateContainerView.translatesAutoresizingMaskIntoConstraints = false
-
-        // Устанавливаем отступ 6pt справа
-        NSLayoutConstraint.activate([
-            dateContainerView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -16),
-            dateContainerView.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor)
-        ])
+        // Устанавливаем datePicker в правую часть навигационного бара
+        let datePickerContainer = UIBarButtonItem(customView: datePicker)
+        datePicker.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        navigationItem.rightBarButtonItem = datePickerContainer
     }
 
     // MARK: - Layout Setup
@@ -182,8 +160,9 @@ class ViewController: UIViewController {
             
             // Search Bar
             searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
-            searchBar.leadingAnchor.constraint(equalTo: topContainerView.leadingAnchor, constant: 16),
-            searchBar.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor, constant: -16),
+            searchBar.leadingAnchor.constraint(equalTo: topContainerView.leadingAnchor, constant: 10),
+            searchBar.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor, constant: -10),
+            searchBar.heightAnchor.constraint(equalToConstant: 36),
             topContainerView.bottomAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
             
             // Placeholder View
@@ -211,5 +190,9 @@ class ViewController: UIViewController {
     
     @objc private func addTracker() {
         print("Add Tracker tapped")
+    }
+    
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        print("Дата изменена на \(sender.date)")
     }
 }
