@@ -1,10 +1,3 @@
-//
-//  TrackersViewController.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 09.09.2024.
-//
-
 import UIKit
 
 class TrackersViewController: UIViewController {
@@ -63,7 +56,15 @@ class TrackersViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func addTracker() {
-        print("Add Tracker tapped")
+        let createTrackerVC = CreateTrackerTypeViewController()
+        
+        createTrackerVC.modalPresentationStyle = .pageSheet
+        createTrackerVC.modalTransitionStyle = .coverVertical
+        
+        
+        let navigationController = UINavigationController(rootViewController: createTrackerVC)
+        navigationController.modalPresentationStyle = .pageSheet
+        present(navigationController, animated: true, completion: nil)
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
