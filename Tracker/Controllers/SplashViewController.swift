@@ -38,3 +38,8 @@ class SplashViewController: UIViewController {
         }
     }
 }
+
+@available(iOS 17, *)
+#Preview {
+    SplashViewController()
+}

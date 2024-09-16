@@ -27,3 +27,8 @@ class MainTabBarController: UITabBarController {
         tabBar.clipsToBounds = true
     }
 }
+
+@available(iOS 17, *)
+#Preview {
+    MainTabBarController()
+}

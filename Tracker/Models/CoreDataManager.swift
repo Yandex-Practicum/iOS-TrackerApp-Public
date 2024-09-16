@@ -1,10 +1,3 @@
-//
-//  CoreDataManager.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 09.09.2024.
-//
-
 import CoreData
 import UIKit
 
@@ -37,6 +30,8 @@ class CoreDataManager {
         tracker.emoji = emoji
         tracker.schedule = schedule as NSObject // Преобразование расписания в объект
         tracker.category = category // Связь с категорией
+        
+        category.addToTrackers(tracker)
         
         do {
             try context.save()

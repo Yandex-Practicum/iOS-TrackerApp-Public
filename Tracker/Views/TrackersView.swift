@@ -1,10 +1,3 @@
-//
-//  TrackersView.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 09.09.2024.
-//
-
 import UIKit
 
 class TrackersView: UIView {
@@ -114,14 +107,18 @@ class TrackersView: UIView {
             topContainerView.bottomAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
             
             // Placeholder View
-            placeholderView.topAnchor.constraint(equalTo: topContainerView.bottomAnchor, constant: 220),
+            placeholderView.topAnchor.constraint(equalTo: topContainerView.bottomAnchor),
+            placeholderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            placeholderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             placeholderView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            placeholderView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
             // Placeholder Image
-            placeholderImageView.topAnchor.constraint(equalTo: placeholderView.topAnchor),
+            //placeholderImageView.topAnchor.constraint(equalTo: placeholderView.topAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: placeholderView.centerYAnchor),
             placeholderImageView.centerXAnchor.constraint(equalTo: placeholderView.centerXAnchor),
-            placeholderImageView.widthAnchor.constraint(equalToConstant: 64),
-            placeholderImageView.heightAnchor.constraint(equalToConstant: 64),
+            //placeholderImageView.widthAnchor.constraint(equalToConstant: 64),
+            //placeholderImageView.heightAnchor.constraint(equalToConstant: 64),
             
             // Placeholder Label
             placeholderLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
