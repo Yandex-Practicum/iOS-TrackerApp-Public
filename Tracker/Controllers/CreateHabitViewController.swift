@@ -2,6 +2,8 @@ import UIKit
 
 class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleViewControllerDelegate {
 
+    var onTrackerAdded: (() -> Void)?
+    
     private var selectedDays: [DayOfWeek] = []
     private let createHabitView = CreateHabitView()
     private let maxNameLength = 38
@@ -92,17 +94,19 @@ class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleV
 
         let selectedDaysStrings = selectedDays.map { $0.rawValue }
         
-        guard let category = CoreDataManager.shared.addCategory(title: selectedCategory) else {
+        guard let category = CoreDataManager.shared.addCategoryEntity(title: selectedCategory) else {
             print("не получается создать категорию")
             return
         }
         
-        guard let tracker = CoreDataManager.shared.addTracker(name: trackerName, color: color, emoji: emoji, schedule: selectedDaysStrings, category: category) else {
+        guard let tracker = CoreDataManager.shared.addTrackerEntity(name: trackerName, color: color, emoji: emoji, schedule: selectedDaysStrings, category: category) else {
             print("не получилось создать привычку")
             return
         }
         
-        print("\(CoreDataManager.shared.fetchTrackers())")
+        print("\(CoreDataManager.shared.fetchAllTrackersEntities())")
+        // Оповещаем, что был добавлен новый трекер
+        onTrackerAdded?()
         dismiss(animated: true, completion: nil)
     }
 
@@ -119,13 +123,13 @@ class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleV
     }
 
     @objc private func categoryTapped() {
-        if selectedCategory == "Важное" {
+        if selectedCategory == "Новое" {
             // Если категория уже выбрана, снимаем выбор
             selectedCategory = nil
             createHabitView.updateSelectedCategoryLabel(with: "")
         } else {
             // Если категория не выбрана, выбираем ее
-            selectedCategory = "Важное"
+            selectedCategory = "Новое"
             createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
         }
         updateCreateButtonState()

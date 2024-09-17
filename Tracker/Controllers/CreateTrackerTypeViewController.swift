@@ -2,6 +2,8 @@ import UIKit
 
 class CreateTrackerTypeViewController: UIViewController {
 
+    var onTrackerAdded: (() -> Void)?
+    
     // MARK: - UI Elements
 
     let habitButton: UIButton = {
@@ -26,16 +28,12 @@ class CreateTrackerTypeViewController: UIViewController {
         return button
     }()
 
-    // MARK: - View Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
         setupLayout()
         setupActions()
     }
-
-    // MARK: - Setup
 
     private func setupNavigationBar() {
         navigationItem.hidesBackButton = true
@@ -76,6 +74,12 @@ class CreateTrackerTypeViewController: UIViewController {
 
     @objc private func habitButtonTapped() {
         let createHabitVC = CreateHabitViewController()
+        
+        // Передаем замыкание дальше в CreateHabitViewController
+        createHabitVC.onTrackerAdded = { [weak self] in
+            self?.onTrackerAdded?() // Вызываем замыкание из CreateTrackerTypeViewController
+        }
+        
         let navigationController = UINavigationController(rootViewController: createHabitVC)
         navigationController.modalPresentationStyle = .pageSheet
         present(navigationController, animated: true, completion: nil)
