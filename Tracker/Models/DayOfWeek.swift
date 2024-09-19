@@ -1,10 +1,3 @@
-//
-//  DayOfWeek.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 12.09.2024.
-//
-
 import Foundation
 
 enum DayOfWeek: String, CaseIterable {

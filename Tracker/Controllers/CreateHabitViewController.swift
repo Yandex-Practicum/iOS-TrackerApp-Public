@@ -104,7 +104,6 @@ class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleV
             return
         }
         
-        print("\(CoreDataManager.shared.fetchAllTrackersEntities())")
         // Оповещаем, что был добавлен новый трекер
         onTrackerAdded?()
         dismiss(animated: true, completion: nil)

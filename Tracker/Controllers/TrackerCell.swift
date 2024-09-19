@@ -3,6 +3,14 @@ import UIKit
 class TrackerCell: UICollectionViewCell {
     static let identifier = "TrackerCell"
     
+    var didTapActionButton: (() -> Void)?
+    
+    
+    private func setupView() {
+        // Добавляем обработчик нажатия
+        actionButton.addTarget(self, action: #selector(handleActionButtonTap), for: .touchUpInside)
+    }
+    
     // MARK: - UI Elements
     
     // Контейнер для всех элементов
@@ -45,7 +53,7 @@ class TrackerCell: UICollectionViewCell {
     // Кнопка действия (например, для отметки выполнения)
     let actionButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        //button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.tintColor = .white // Цвет иконки кнопки
         button.layer.cornerRadius = 17
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -77,6 +85,7 @@ class TrackerCell: UICollectionViewCell {
         containerView.addSubview(counterLabel)
         
         setupConstraints()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
@@ -128,13 +137,38 @@ class TrackerCell: UICollectionViewCell {
         ])
     }
     
+    // Обработчик нажатия на кнопку
+    @objc private func handleActionButtonTap() {
+        didTapActionButton?()
+    }
+    
     // MARK: - Настройка ячейки
     
-    func configure(with tracker: Tracker) {
+    func configure(with tracker: Tracker, isCompleted: Bool, completedCount: Int, isFutureDate: Bool) {
         backgroundCardView.backgroundColor = tracker.color
         emojiLabel.text = tracker.emoji
         trackerNameLabel.text = tracker.name
         actionButton.backgroundColor = tracker.color
-        // Здесь можно обновить счетчик выполнений, если у вас есть такая информация
+        
+        counterLabel.text = "\(completedCount) дней"
+        
+        if isFutureDate {
+            actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            actionButton.isUserInteractionEnabled = false
+            actionButton.alpha = 0.5
+            actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
+        } else {
+            if isCompleted {
+                actionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+                actionButton.isUserInteractionEnabled = false
+                actionButton.alpha = 0.5
+                actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
+            } else {
+                actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+                actionButton.isUserInteractionEnabled = true
+                actionButton.alpha = 1.0
+                actionButton.backgroundColor = tracker.color
+            }
+        }
     }
 }

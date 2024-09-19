@@ -1,10 +1,3 @@
-//
-//  Tracker.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 06.09.2024.
-//
-
 import UIKit
 
 struct Tracker {

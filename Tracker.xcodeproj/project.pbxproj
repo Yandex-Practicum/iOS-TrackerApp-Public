@@ -19,7 +19,6 @@
 		1C860E2D2C8F2E9700A0D3BC /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C860E2C2C8F2E9700A0D3BC /* SplashViewController.swift */; };
 		1C860E322C8F313400A0D3BC /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C860E312C8F313400A0D3BC /* MainTabBarController.swift */; };
 		1C860E342C8F32B700A0D3BC /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C860E332C8F32B700A0D3BC /* TrackersViewController.swift */; };
-		1C860E362C8F335400A0D3BC /* TrackersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C860E352C8F335400A0D3BC /* TrackersView.swift */; };
 		1C9505C22C8F3F84003FF17F /* CreateTrackerTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9505C12C8F3F84003FF17F /* CreateTrackerTypeViewController.swift */; };
 		1CCBC7892C99A05E00124C53 /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCBC7882C99A05E00124C53 /* TrackerCell.swift */; };
 		1CCBC78B2C99A08C00124C53 /* TrackerCategoryHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCBC78A2C99A08C00124C53 /* TrackerCategoryHeader.swift */; };
@@ -46,7 +45,6 @@
 		1C860E2C2C8F2E9700A0D3BC /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		1C860E312C8F313400A0D3BC /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		1C860E332C8F32B700A0D3BC /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
-		1C860E352C8F335400A0D3BC /* TrackersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersView.swift; sourceTree = "<group>"; };
 		1C9505C12C8F3F84003FF17F /* CreateTrackerTypeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerTypeViewController.swift; sourceTree = "<group>"; };
 		1CCBC7882C99A05E00124C53 /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
 		1CCBC78A2C99A08C00124C53 /* TrackerCategoryHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryHeader.swift; sourceTree = "<group>"; };
@@ -72,13 +70,12 @@
 		1C06ED852C8B05F700A5A5F4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1CCBC78E2C9ACFC400124C53 /* Services */,
 				1C06ED8E2C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld */,
-				1C860E2A2C8EF3CB00A0D3BC /* CoreDataManager.swift */,
 				1C06ED882C8B064100A5A5F4 /* Tracker.swift */,
 				1C06ED862C8B061600A5A5F4 /* TrackerCategory.swift */,
 				1C06ED8A2C8B067B00A5A5F4 /* TrackerRecord.swift */,
 				1CEA55F12C9308F9000580D7 /* DayOfWeek.swift */,
-				1CCBC78C2C99BB1F00124C53 /* TrackerService.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -141,10 +138,18 @@
 		1C860E302C8F2FFD00A0D3BC /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1C860E352C8F335400A0D3BC /* TrackersView.swift */,
 				1CEA55E52C904AB1000580D7 /* CreateHabitView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		1CCBC78E2C9ACFC400124C53 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				1C860E2A2C8EF3CB00A0D3BC /* CoreDataManager.swift */,
+				1CCBC78C2C99BB1F00124C53 /* TrackerService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,7 +237,6 @@
 				1CCBC78D2C99BB1F00124C53 /* TrackerService.swift in Sources */,
 				1CEA55E62C904AB1000580D7 /* CreateHabitView.swift in Sources */,
 				1C06ED872C8B061600A5A5F4 /* TrackerCategory.swift in Sources */,
-				1C860E362C8F335400A0D3BC /* TrackersView.swift in Sources */,
 				1C567E762C8882700023A2BC /* SceneDelegate.swift in Sources */,
 				1C860E2B2C8EF3CB00A0D3BC /* CoreDataManager.swift in Sources */,
 				1C06ED902C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld in Sources */,

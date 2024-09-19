@@ -73,7 +73,7 @@ class TrackersViewController: UIViewController {
 
     // MARK: - Properties
 
-    private var trackerCategories: [TrackerCategory] = []
+    private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let trackerService = TrackerService()
 
@@ -200,15 +200,14 @@ class TrackersViewController: UIViewController {
         ])
     }
 
-    // MARK: - Data Loading
+    // MARK: - Загрузка данных
 
     private func loadTrackers(for date: Date) {
         activityIndicator.startAnimating()
         DispatchQueue.global().async {
-            let trackerCategories = self.trackerService.fetchTrackers(for: date)
+            let (trackerCategories, completedTrackers, completedCount) = self.trackerService.fetchTrackers(for: date)
             DispatchQueue.main.async {
-                self.trackerCategories = trackerCategories
-                print("Трекеры загружены: \(trackerCategories)") // Отладочный вывод
+                self.trackerCategories = (trackerCategories, completedTrackers, completedCount)
                 self.collectionView.reloadData()
                 self.updatePlaceholderVisibility()
                 self.activityIndicator.stopAnimating()
@@ -217,7 +216,7 @@ class TrackersViewController: UIViewController {
     }
 
     private func updatePlaceholderVisibility() {
-        let hasTrackers = !trackerCategories.isEmpty
+        let hasTrackers = !trackerCategories.0.isEmpty
         placeholderView.isHidden = hasTrackers
         collectionView.isHidden = !hasTrackers
     }
@@ -248,21 +247,40 @@ class TrackersViewController: UIViewController {
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return trackerCategories.count
+        return trackerCategories.0.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return trackerCategories[section].trackers.count
+        return trackerCategories.0[section].trackers.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identifier, for: indexPath) as? TrackerCell else {
             return UICollectionViewCell()
         }
 
-        let tracker = trackerCategories[indexPath.section].trackers[indexPath.item]
-        cell.configure(with: tracker)
+        let tracker = trackerCategories.0[indexPath.section].trackers[indexPath.item]
+        
+        // Получаем количество выполнений для этого трекера
+        let completedCount = trackerCategories.2[tracker.id] ?? 0
+        
+        // Проверяем, завершен ли трекер, используя словарь completedTrackers
+        let isCompleted = trackerCategories.1[tracker.id] ?? false
+        
+        let isFutureDate = datePicker.date > Date()
+        
+        print("Статус трекера \(tracker.name): \(isCompleted ? "выполнен" : "невыполнен")")
+        
+        cell.configure(with: tracker, isCompleted: isCompleted, completedCount: completedCount, isFutureDate: isFutureDate)
+        
+        // Передаем логику для нажатия на кнопку
+        cell.didTapActionButton = { [weak self] in
+            guard let self = self else { return }
+            // Обновляем статус трекера
+            self.trackerService.completeTracker(tracker, on: self.datePicker.date)
+            self.loadTrackers(for: self.datePicker.date)  // Перезагружаем трекеры
+        }
+        
         return cell
     }
 
@@ -277,7 +295,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             ) as? TrackerCategoryHeader else {
                 return UICollectionReusableView()
             }
-            let categoryTitle = trackerCategories[indexPath.section].title
+            let categoryTitle = trackerCategories.0[indexPath.section].title
             header.configure(with: categoryTitle)
             return header
         }
