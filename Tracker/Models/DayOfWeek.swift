@@ -21,11 +21,7 @@ enum DayOfWeek: String, CaseIterable {
         }
     }
     
-    static func allDays() -> [DayOfWeek] {
-        return [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-    }
-    
     static func fromFullName(_ name: String) -> DayOfWeek? {
-        return allDays().first { $0.fullName == name }
+        return DayOfWeek.allCases.first { $0.fullName == name }
     }
 }
