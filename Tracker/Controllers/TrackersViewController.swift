@@ -204,7 +204,8 @@ final class TrackersViewController: UIViewController {
 
     private func loadTrackers(for date: Date) {
         activityIndicator.startAnimating()
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
             let (trackerCategories, completedTrackers, completedCount) = self.trackerService.fetchTrackers(for: date)
             DispatchQueue.main.async {
                 self.trackerCategories = (trackerCategories, completedTrackers, completedCount)
@@ -247,11 +248,11 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return trackerCategories.0.count
+        trackerCategories.0.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return trackerCategories.0[section].trackers.count
+        trackerCategories.0[section].trackers.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -316,24 +317,24 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
     // Размер заголовка секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 55)
+        CGSize(width: collectionView.frame.width, height: 55)
     }
 
     // Отступы для секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        //let topInset: CGFloat = section == 0 ? 24 : 0
-        //let topInset: CGFloat = 12
-        return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
 
     // Межстрочный интервал
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        //return 0
+        .zero
     }
 
     // Интервал между элементами в строке
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        //return 0
+        .zero
     }
 }
 

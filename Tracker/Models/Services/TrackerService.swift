@@ -1,6 +1,6 @@
 import UIKit
 
-class TrackerService {
+final class TrackerService {
     
     private let coreDataManager = CoreDataManager.shared
     

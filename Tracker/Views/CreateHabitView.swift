@@ -320,7 +320,8 @@ final class CreateHabitView: UIView {
         scheduleTitleLabelTopConstraint.constant = isScheduleSelected ? 15 : 27
 
         // Анимируем изменения
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self else { return }
             self.layoutIfNeeded()
         }
     }
@@ -335,7 +336,8 @@ final class CreateHabitView: UIView {
         categoryTitleLabelTopConstraint.constant = isCategorySelected ? 15 : 27
 
         // Анимируем изменения
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self else { return }
             self.layoutIfNeeded()
         }
     }
