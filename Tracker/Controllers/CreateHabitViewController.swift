@@ -1,6 +1,6 @@
 import UIKit
 
-class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleViewControllerDelegate {
+final class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleViewControllerDelegate {
 
     var onTrackerAdded: (() -> Void)?
     

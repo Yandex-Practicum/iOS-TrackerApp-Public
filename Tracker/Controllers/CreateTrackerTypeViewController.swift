@@ -1,6 +1,6 @@
 import UIKit
 
-class CreateTrackerTypeViewController: UIViewController {
+final class CreateTrackerTypeViewController: UIViewController {
 
     var onTrackerAdded: (() -> Void)?
     

@@ -1,6 +1,6 @@
 import UIKit
 
-class ScheduleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+final class ScheduleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     weak var delegate: ScheduleViewControllerDelegate?
     private let daysOfWeek: [DayOfWeek] = DayOfWeek.allCases
@@ -116,7 +116,7 @@ class ScheduleViewController: UIViewController, UITableViewDelegate, UITableView
     }
 }
 
-class ScheduleCell: UITableViewCell {
+final class ScheduleCell: UITableViewCell {
     
     static let reuseIdentifier = "ScheduleCell"
     
