@@ -6,7 +6,7 @@ final class CreateTrackerTypeViewController: UIViewController {
     
     // MARK: - UI Elements
 
-    let habitButton: UIButton = {
+    private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Привычка", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -17,7 +17,7 @@ final class CreateTrackerTypeViewController: UIViewController {
         return button
     }()
 
-    let eventButton: UIButton = {
+    private lazy var eventButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

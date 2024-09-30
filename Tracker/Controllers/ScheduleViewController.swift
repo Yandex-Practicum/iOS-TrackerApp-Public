@@ -15,7 +15,7 @@ final class ScheduleViewController: UIViewController, UITableViewDelegate, UITab
         fatalError("init(coder:) has not been implemented")
     }
 
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.reuseIdentifier)
@@ -26,7 +26,7 @@ final class ScheduleViewController: UIViewController, UITableViewDelegate, UITab
         return tableView
     }()
 
-    private let doneButton: UIButton = {
+    private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Готово", for: .normal)
         button.backgroundColor = .black

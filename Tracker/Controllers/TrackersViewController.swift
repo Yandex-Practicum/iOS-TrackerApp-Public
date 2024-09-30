@@ -4,7 +4,7 @@ final class TrackersViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    let datePicker: UIDatePicker = {
+    private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
@@ -13,13 +13,13 @@ final class TrackersViewController: UIViewController {
         return picker
     }()
 
-    let topContainerView: UIView = {
+    private lazy var topContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Трекеры"
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
@@ -27,7 +27,7 @@ final class TrackersViewController: UIViewController {
         return label
     }()
 
-    let searchBar: UISearchBar = {
+    private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Поиск"
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -36,13 +36,13 @@ final class TrackersViewController: UIViewController {
         return searchBar
     }()
 
-    let placeholderView: UIView = {
+    private lazy var placeholderView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let placeholderImageView: UIImageView = {
+    private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "star")
         imageView.tintColor = .lightGray
@@ -50,7 +50,7 @@ final class TrackersViewController: UIViewController {
         return imageView
     }()
 
-    let placeholderLabel: UILabel = {
+    private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
@@ -59,7 +59,7 @@ final class TrackersViewController: UIViewController {
         return label
     }()
 
-    let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 12

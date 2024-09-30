@@ -14,7 +14,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - UI Elements
     
     // Контейнер для всех элементов
-    private let containerView: UIView = {
+    private lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
@@ -22,7 +22,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     // Фоновый вид для карточки трекера
-    private let backgroundCardView: UIView = {
+    private lazy var backgroundCardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
@@ -31,7 +31,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     // Эмодзи трекера
-    private let emojiLabel: UILabel = {
+    private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 24)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +39,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     // Название трекера
-    private let trackerNameLabel: UILabel = {
+    private lazy var trackerNameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
         label.numberOfLines = 2
@@ -51,7 +51,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     // Кнопка действия (например, для отметки выполнения)
-    let actionButton: UIButton = {
+    private lazy var actionButton: UIButton = {
         let button = UIButton()
         //button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.tintColor = .white // Цвет иконки кнопки
@@ -61,7 +61,7 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     // Счетчик выполнений (например, "0 дней")
-    private let counterLabel: UILabel = {
+    private lazy var counterLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .black

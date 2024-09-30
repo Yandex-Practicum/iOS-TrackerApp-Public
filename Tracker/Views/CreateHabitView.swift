@@ -1,10 +1,10 @@
 import UIKit
 
-class CreateHabitView: UIView {
+final class CreateHabitView: UIView {
 
     // MARK: - UI Elements
 
-    let trackerNameTextView: UITextView = {
+    lazy var trackerNameTextView: UITextView = {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textView.layer.cornerRadius = 16
@@ -14,7 +14,7 @@ class CreateHabitView: UIView {
         return textView
     }()
 
-    let placeholderLabel: UILabel = {
+    lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = "Введите название трекера"
         label.font = UIFont.systemFont(ofSize: 17)
@@ -23,7 +23,7 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let clearButton: UIButton = {
+    lazy var clearButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         button.tintColor = .lightGray
@@ -32,7 +32,7 @@ class CreateHabitView: UIView {
         return button
     }()
 
-    let errorLabel: UILabel = {
+    lazy var errorLabel: UILabel = {
         let label = UILabel()
         label.text = "Ограничение 38 символов"
         label.font = UIFont.systemFont(ofSize: 12)
@@ -43,7 +43,7 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let trackerNameContainer: UIView = {
+    lazy var trackerNameContainer: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.backgroundColor = .systemGray6
@@ -51,7 +51,7 @@ class CreateHabitView: UIView {
         return view
     }()
 
-    let optionsContainer: UIView = {
+    lazy var optionsContainer: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.backgroundColor = .systemGray6
@@ -59,20 +59,20 @@ class CreateHabitView: UIView {
         return view
     }()
 
-    let separatorLine: UIView = {
+    private lazy var separatorLine: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let categoryView: UIView = {
+    lazy var categoryView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let categoryLabel: UILabel = {
+    private lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.text = "Категория"
         label.font = UIFont.systemFont(ofSize: 17)
@@ -81,7 +81,7 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let selectedCategoryLabel: UILabel = {
+    private lazy var selectedCategoryLabel: UILabel = {
         let label = UILabel()
         label.text = "" // Изначально пусто
         label.font = UIFont.systemFont(ofSize: 17)
@@ -92,20 +92,20 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let categoryChevronImageView: UIImageView = {
+    private lazy var categoryChevronImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "arrow_right"))
         imageView.tintColor = .systemGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
-    let scheduleView: UIView = {
+    lazy var scheduleView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let scheduleTitleLabel: UILabel = {
+    private lazy var scheduleTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
         label.font = UIFont.systemFont(ofSize: 17)
@@ -114,7 +114,7 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let selectedDaysLabel: UILabel = {
+    private lazy var selectedDaysLabel: UILabel = {
         let label = UILabel()
         label.text = "" // Изначально пусто
         label.font = UIFont.systemFont(ofSize: 17)
@@ -125,14 +125,14 @@ class CreateHabitView: UIView {
         return label
     }()
 
-    let scheduleChevronImageView: UIImageView = {
+    private lazy var scheduleChevronImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "arrow_right"))
         imageView.tintColor = .systemGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
-    let cancelButton: UIButton = {
+    lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Отменить", for: .normal)
         button.setTitleColor(UIColor(named: "cancelButton"), for: .normal)
@@ -145,7 +145,7 @@ class CreateHabitView: UIView {
         return button
     }()
 
-    let createButton: UIButton = {
+    lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)

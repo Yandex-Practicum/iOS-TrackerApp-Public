@@ -5,7 +5,7 @@ final class TrackerCategoryHeader: UICollectionReusableView {
     
     // MARK: - UI Elements
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 19)
         label.textColor = .black
