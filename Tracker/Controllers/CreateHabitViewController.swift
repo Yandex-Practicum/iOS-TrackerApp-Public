@@ -10,7 +10,7 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
     private var optionsTopConstraint: NSLayoutConstraint?
     private var selectedCategory: String?
     
-    private var emoji: String = "😊"
+    private var emoji: String = ""
     private var color: UIColor = UIColor(resource: .launchScreenBackground)
 
     // MARK: - View Lifecycle
@@ -25,7 +25,8 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
         setupActions()
         setupTextViewDelegate()
         setupInitialConstraints()
-
+        setupEmojiSelection()
+        setupColorSelection()
         createHabitView.updateSelectedDaysLabel(with: "")
         updateCreateButtonState()
     }
@@ -63,6 +64,22 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
     private func setupInitialConstraints() {
         optionsTopConstraint = createHabitView.optionsContainer.topAnchor.constraint(equalTo: createHabitView.trackerNameContainer.bottomAnchor, constant: 24)
         optionsTopConstraint?.isActive = true
+    }
+    
+    private func setupEmojiSelection() {
+        createHabitView.onEmojiSelected = { [weak self] selectedEmoji in
+            self?.emoji = selectedEmoji // Обновляем выбранное эмодзи
+            self?.updateCreateButtonState() // Обновляем состояние кнопки "Создать"
+            print("Выбранное эмодзи: \(selectedEmoji)")
+        }
+    }
+    
+    private func setupColorSelection() {
+        createHabitView.onColorSelected = { [weak self] selectedColor in
+            self?.color = selectedColor // Обновляем выбранный цвет
+            self?.updateCreateButtonState() // Обновляем состояние кнопки "Создать"
+            print("Выбранный цвет: \(selectedColor)")
+        }
     }
 
     // MARK: - Actions
@@ -106,7 +123,15 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
         
         // Оповещаем, что был добавлен новый трекер
         onTrackerAdded?()
-        dismiss(animated: true, completion: nil)
+        //dismiss(animated: true, completion: nil)
+
+        // Закрываем оба экрана
+        if let presentingVC = presentingViewController?.presentingViewController {
+            presentingVC.dismiss(animated: true, completion: nil) // Закрываем экран выбора типа привычки
+        } else {
+            // Если экран не был представлен модально, используем popToRootViewController
+            navigationController?.popToRootViewController(animated: true)
+        }
     }
 
     @objc private func dismissKeyboard() {
@@ -188,12 +213,29 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
     }
 
     // MARK: - Вспомогательные методы
-
+    
+//    private func updateCreateButtonState() {
+//        let isNameEntered = !(createHabitView.trackerNameTextView.text?.isEmpty ?? true)
+//        let isCategorySelected = selectedCategory != nil
+//        let isSelectedDays = selectedDays.count >= 1
+//        let isEmojiSelected = !emoji.isEmpty // Проверка на выбор эмодзи
+//        
+//        // Кнопка активируется только если введено название, выбрана категория, расписание и эмодзи
+//        createHabitView.createButton.isEnabled = isNameEntered && isCategorySelected && isSelectedDays && isEmojiSelected
+//        createHabitView.createButton.backgroundColor = createHabitView.createButton.isEnabled ? UIColor(named: "createButtonActive") : UIColor(named: "createButtonNone")
+//    }
+    
     private func updateCreateButtonState() {
+        print("Обновление состояния кнопки 'Создать'")
         let isNameEntered = !(createHabitView.trackerNameTextView.text?.isEmpty ?? true)
         let isCategorySelected = selectedCategory != nil
         let isSelectedDays = selectedDays.count >= 1
-        createHabitView.createButton.isEnabled = isNameEntered && isCategorySelected && isSelectedDays
+        let isEmojiSelected = !emoji.isEmpty // Проверка на выбор эмодзи
+        let isColorSelected = color != UIColor(resource: .launchScreenBackground) // Проверка на выбор цвета
+        
+        // Кнопка активируется только если введено название, выбрана категория, расписание, эмодзи и цвет
+        createHabitView.createButton.isEnabled = isNameEntered && isCategorySelected && isSelectedDays && isEmojiSelected && isColorSelected
+        print("Кнопка активна: \(createHabitView.createButton.isEnabled)")
         createHabitView.createButton.backgroundColor = createHabitView.createButton.isEnabled ? UIColor(named: "createButtonActive") : UIColor(named: "createButtonNone")
     }
 }
