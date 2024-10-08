@@ -3,11 +3,11 @@ import UIKit
 final class CreateHabitView: UIView {
 
     var onEmojiSelected: ((String) -> Void)?
-    private var selectedEmoji: String? // Хранит выбранную эмоджи
-    private var selectedEmojiIndex: IndexPath? // Хранит индекс выбранной эмоджи
+    private var selectedEmoji: String?
+    private var selectedEmojiIndex: IndexPath?
     
     var onColorSelected: ((UIColor) -> Void)?
-    private var selectedColorIndex: IndexPath? // Хранит индекс выбранного цвета
+    private var selectedColorIndex: IndexPath?
 
     // MARK: - UI Elements
 
@@ -497,63 +497,58 @@ extension CreateHabitView: UICollectionViewDataSource, UICollectionViewDelegateF
             let emoji = emojis[indexPath.item]
             let isSelected = indexPath == selectedEmojiIndex
             cell.configure(with: emoji, isSelected: isSelected)
-            cell.setButtonAction(target: self, action: #selector(emojiButtonTapped(_:)))
+            
+            // Используем замыкание для обработки нажатия
+            cell.didTapEmojiButton = { [weak self] in
+                self?.emojiButtonTapped(at: indexPath)
+            }
             return cell
         } else if collectionView == colorCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCell.identifier, for: indexPath) as! ColorCell
             let color = colors[indexPath.item]
             let isSelected = indexPath == selectedColorIndex
             cell.configure(with: color, isSelected: isSelected)
-            cell.setButtonAction(target: self, action: #selector(colorButtonTapped(_:))) // Привязка действия
+            
+            // Используем замыкание для обработки нажатия
+            cell.didTapColorButton = { [weak self] in
+                self?.colorButtonTapped(at: indexPath)
+            }
             return cell
         }
         return UICollectionViewCell()
     }
     
-    @objc private func emojiButtonTapped(_ sender: UIButton) {
-        guard let emoji = sender.titleLabel?.text else { return }
+    private func emojiButtonTapped(at indexPath: IndexPath) {
+        //guard let emoji = emojis[safe: indexPath.item] else { return }
+        let emoji = emojis[indexPath.item]
 
-        // Получаем индекс нового выбранного эмоджи
-        if let newIndex = emojis.firstIndex(of: emoji) {
-            let newIndexPath = IndexPath(item: newIndex, section: 0)
+        // Проверяем, что выбран новый эмоджи
+        if indexPath != selectedEmojiIndex {
+            if let oldIndexPath = selectedEmojiIndex {
+                selectedEmojiIndex = indexPath
+                selectedEmoji = emoji
 
-            // Проверяем, что выбран новый эмоджи
-            if newIndexPath != selectedEmojiIndex {
-                // Если есть предыдущий выбранный эмоджи, сбрасываем его
-                if let oldIndexPath = selectedEmojiIndex {
-                    selectedEmojiIndex = newIndexPath
-                    selectedEmoji = emoji
-
-                    // Перезагружаем только предыдущую и новую выбранную ячейки
-                    emojiCollectionView.reloadItems(at: [oldIndexPath, newIndexPath])
-                } else {
-                    // Если это первый выбор, устанавливаем новый индекс и перезагружаем только новую ячейку
-                    selectedEmojiIndex = newIndexPath
-                    selectedEmoji = emoji
-                    emojiCollectionView.reloadItems(at: [newIndexPath])
-                }
-
-                // Передаем выбранное эмоджи в контроллер через коллбэк
-                onEmojiSelected?(emoji)
+                // Перезагружаем только предыдущую и новую выбранную ячейки
+                emojiCollectionView.reloadItems(at: [oldIndexPath, indexPath])
+            } else {
+                selectedEmojiIndex = indexPath
+                selectedEmoji = emoji
+                emojiCollectionView.reloadItems(at: [indexPath])
             }
+
+            // Передаем выбранное эмодзи через коллбэк
+            onEmojiSelected?(emoji)
         }
     }
     
-    @objc private func colorButtonTapped(_ sender: UIButton) {
-        print("Нажатие на цветовую кнопку")
-        let point = sender.convert(CGPoint.zero, to: colorCollectionView)
-        guard let indexPath = colorCollectionView.indexPathForItem(at: point) else { return }
-        
+    private func colorButtonTapped(at indexPath: IndexPath) {
         let selectedColor = colors[indexPath.item]
-        print("Выбранный цвет: \(selectedColor)")
-        
+
         if indexPath != selectedColorIndex {
             if let oldIndexPath = selectedColorIndex {
                 selectedColorIndex = indexPath
-
                 colorCollectionView.reloadItems(at: [oldIndexPath, indexPath])
             } else {
-                // Если это первый выбор
                 selectedColorIndex = indexPath
                 colorCollectionView.reloadItems(at: [indexPath])
             }

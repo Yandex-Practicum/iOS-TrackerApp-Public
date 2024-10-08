@@ -1,9 +1,18 @@
 import UIKit
+import CoreData
 
 final class TrackerService {
     
-    private let coreDataManager = CoreDataManager.shared
+    private let trackerStore: TrackerStore
+    private let categoryStore: TrackerCategoryStore
+    private let recordStore: TrackerRecordStore
     
+    init(context: NSManagedObjectContext) {
+        self.trackerStore = TrackerStore(context: context)
+        self.categoryStore = TrackerCategoryStore(context: context)
+        self.recordStore = TrackerRecordStore(context: context)
+    }
+
     // Преобразование TrackerEntity в Tracker
     func tracker(from entity: TrackerEntity) -> Tracker? {
         guard let id = entity.id,
@@ -17,117 +26,50 @@ final class TrackerService {
         return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
     }
 
-    // Преобразование TrackerCategoryEntity в TrackerCategory
-    func trackerCategory(from entity: TrackerCategoryEntity, trackers: [Tracker]) -> TrackerCategory {
-        return TrackerCategory(title: entity.title ?? "", trackers: trackers)
-    }
-
-    // Преобразование TrackerRecordEntity в TrackerRecord
-    func trackerRecord(from entity: TrackerRecordEntity) -> TrackerRecord? {
-        guard let id = entity.tracker?.id,
-              let date = entity.date else {
-            return nil
-        }
-        return TrackerRecord(trackerID: id, date: date)
-    }
-
-    // Получение трекеров на выбранную дату, с группировкой по категориям
-//    func fetchTrackers(for date: Date) -> (trackersByCategory: [TrackerCategory], completedTrackers: [UUID: Bool]) {
-//        let dayOfWeek = getDayOfWeek(from: date)
-//        let trackerEntities = coreDataManager.fetchAllTrackersEntities()
-//        
-//        // Получаем все записи о выполнении на указанную дату
-//        let completedRecords = coreDataManager.fetchAllRecordsForDate(date)
-//        print("Найдено записей о выполнении: \(completedRecords.count) для даты: \(date)")
-//        
-//        var categoryDict: [String: [Tracker]] = [:]
-//        var completedTrackers: [UUID: Bool] = [:]
-//        
-//        for trackerEntity in trackerEntities {
-//            if let schedule = trackerEntity.schedule as? [String], schedule.contains(dayOfWeek) {
-//                if let tracker = tracker(from: trackerEntity) {
-//                    let categoryTitle = trackerEntity.category?.title ?? "Без категории"
-//                    categoryDict[categoryTitle, default: []].append(tracker)
-//                    
-//                    // Проверяем, завершен ли трекер на эту дату
-//                    let isCompleted = completedRecords.contains { $0.tracker?.id == tracker.id }
-//                    completedTrackers[tracker.id] = isCompleted
-//                    print("Трекер: \(tracker.name) завершен: \(isCompleted)")
-//                }
-//            }
-//        }
-//        
-//        var trackerCategories: [TrackerCategory] = []
-//        for (category, trackers) in categoryDict {
-//            trackerCategories.append(TrackerCategory(title: category, trackers: trackers))
-//        }
-//        
-//        return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers)
-//    }
-    
+    // Получение трекеров для конкретной даты
     func fetchTrackers(for date: Date) -> (trackersByCategory: [TrackerCategory], completedTrackers: [UUID: Bool], completionCounts: [UUID: Int]) {
-        let dayOfWeek = getDayOfWeek(from: date)
-        let trackerEntities = coreDataManager.fetchAllTrackersEntities()
-        
-        // Получаем все записи о выполнении на указанную дату
-        let completedRecords = coreDataManager.fetchAllRecordsForDate(date)
-        print("Найдено записей о выполнении: \(completedRecords.count) для даты: \(date)")
-        
-        var categoryDict: [String: [Tracker]] = [:]
-        var completedTrackers: [UUID: Bool] = [:]
-        var completionCounts: [UUID: Int] = [:] // Словарь для хранения количества выполнений
-        
-        for trackerEntity in trackerEntities {
-            if let schedule = trackerEntity.schedule as? [String], schedule.contains(dayOfWeek) {
-                if let tracker = tracker(from: trackerEntity) {
-                    let categoryTitle = trackerEntity.category?.title ?? "Без категории"
+            let dayOfWeek = getDayOfWeek(from: date)
+            let trackers = trackerStore.fetchAllTrackers()
+            
+            // Получаем все записи о выполнении на указанную дату
+            let completedRecords = recordStore.fetchRecords(for: date)
+            
+            var categoryDict: [String: [Tracker]] = [:]
+            var completedTrackers: [UUID: Bool] = [:]
+            var completionCounts: [UUID: Int] = [:]
+            
+            for tracker in trackers {
+                if tracker.schedule.contains(dayOfWeek) {
+                    let categoryTitle = categoryStore.fetchAllCategories().first(where: { category in
+                        category.trackers.contains(where: { $0.id == tracker.id })
+                    })?.title ?? "Без категории"
+                    
                     categoryDict[categoryTitle, default: []].append(tracker)
                     
-                    // Проверяем, завершен ли трекер на эту дату
-                    let isCompleted = completedRecords.contains { $0.tracker?.id == tracker.id }
+                    // Проверяем, есть ли запись для трекера на эту дату
+                    let isCompleted = completedRecords.contains { $0.trackerID == tracker.id }
                     completedTrackers[tracker.id] = isCompleted
                     
-                    // Получаем количество завершений для трекера
-                    let allRecordsForTracker = coreDataManager.fetchRecordsForTracker(trackerID: tracker.id)
-                    let completionCount = allRecordsForTracker.count
+                    let completionCount = recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
                     completionCounts[tracker.id] = completionCount
-                    
-                    print("Трекер: \(tracker.name) завершен: \(isCompleted), количество выполнений: \(completionCount)")
                 }
             }
+            
+            var trackerCategories: [TrackerCategory] = []
+            for (category, trackers) in categoryDict {
+                trackerCategories.append(TrackerCategory(title: category, trackers: trackers))
+            }
+            
+            return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers, completionCounts: completionCounts)
         }
-        
-        var trackerCategories: [TrackerCategory] = []
-        for (category, trackers) in categoryDict {
-            trackerCategories.append(TrackerCategory(title: category, trackers: trackers))
-        }
-        
-        return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers, completionCounts: completionCounts)
-    }
 
     func completeTracker(_ tracker: Tracker, on date: Date) {
-        guard let trackerEntity = coreDataManager.fetchTrackerEntity(by: tracker.id) else {
-            print("Трекер не найден")
-            return
-        }
-        
-        if let record = coreDataManager.addRecordEntity(for: trackerEntity, date: date) {
-            print("Запись о выполнении трекера добавлена: \(record)")
-        } else {
-            print("Не удалось добавить запись о выполнении")
-        }
+        recordStore.addRecord(for: tracker, date: date)
     }
-    
+
     // Логика поиска по имени
     func searchTrackers(with keyword: String) -> [Tracker] {
-        let trackerEntities = coreDataManager.fetchAllTrackersEntities()
-        return trackerEntities.compactMap { entity in
-            if let tracker = tracker(from: entity),
-               tracker.name.lowercased().contains(keyword.lowercased()) {
-                return tracker
-            }
-            return nil
-        }
+        return trackerStore.fetchAllTrackers().filter { $0.name.lowercased().contains(keyword.lowercased()) }
     }
     
     // Вспомогательный метод для получения дня недели из даты
@@ -139,7 +81,23 @@ final class TrackerService {
     }
     
     func countCompleted(for tracker: Tracker) -> Int {
-        let records = coreDataManager.fetchRecordsForTracker(trackerID: tracker.id)
-        return records.count
+        return recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
+    }
+}
+
+// MARK: - Расширения для сериализации UIColor
+
+extension UIColor {
+    func toData() -> Data? {
+        return try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: true)
+    }
+    
+    static func fromData(_ data: Data) -> UIColor? {
+        do {
+            return try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data)
+        } catch {
+            print("Ошибка при распаковке цвета: \(error)")
+            return nil
+        }
     }
 }

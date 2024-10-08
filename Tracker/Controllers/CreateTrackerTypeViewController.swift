@@ -38,7 +38,13 @@ final class CreateTrackerTypeViewController: UIViewController {
     private func setupNavigationBar() {
         navigationItem.hidesBackButton = true
         navigationItem.title = "Создание трекера"
-        navigationController?.navigationBar.titleTextAttributes = [
+        
+        guard let navigationBar = navigationController?.navigationBar else {
+            print("NavigationController отсутствует")
+            return
+        }
+        
+        navigationBar.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: UIColor.black,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .bold)
         ]

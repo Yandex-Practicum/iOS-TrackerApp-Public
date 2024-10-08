@@ -1,7 +1,20 @@
 import UIKit
+import CoreData
 
 final class TrackersViewController: UIViewController {
 
+    init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Невозможно получить AppDelegate")
+        }
+        self.trackerService = TrackerService(context: appDelegate.persistentContainer.viewContext)
+        super.init(nibName: nil, bundle: nil) // Вызов инициализатора родительского класса
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI Elements
 
     private lazy var datePicker: UIDatePicker = {
@@ -72,10 +85,10 @@ final class TrackersViewController: UIViewController {
     }()
 
     // MARK: - Properties
-
+    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>!
     private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let trackerService = TrackerService()
+    private let trackerService: TrackerService
 
     // MARK: - View Lifecycle
 
@@ -88,6 +101,7 @@ final class TrackersViewController: UIViewController {
         setupCollectionView()
         setupActivityIndicator()
         loadTrackers(for: Date())
+        setupFetchedResultsController()
     }
 
     // MARK: - Setup Methods
@@ -162,12 +176,17 @@ final class TrackersViewController: UIViewController {
             addButton.bottomAnchor.constraint(equalTo: addButtonContainer.bottomAnchor)
         ])
 
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.addSubview(addButtonContainer)
+        guard let navigationBar = navigationController?.navigationBar else {
+            print("Navigation bar не найден")
+            return
+        }
+        
+        navigationBar.addSubview(addButtonContainer)
         addButtonContainer.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            addButtonContainer.leadingAnchor.constraint(equalTo: navigationBar!.leadingAnchor, constant: 6),
-            addButtonContainer.centerYAnchor.constraint(equalTo: navigationBar!.centerYAnchor)
+            addButtonContainer.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 6),
+            addButtonContainer.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor)
         ])
 
         let datePickerContainer = UIBarButtonItem(customView: datePicker)
@@ -213,6 +232,31 @@ final class TrackersViewController: UIViewController {
                 self.updatePlaceholderVisibility()
                 self.activityIndicator.stopAnimating()
             }
+        }
+    }
+    
+    private func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Невозможно получить AppDelegate")
+        }
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: appDelegate.persistentContainer.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        
+        fetchedResultsController.delegate = self
+
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Ошибка при загрузке трекеров: \(error)")
         }
     }
 
@@ -342,4 +386,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: UISearchBarDelegate {
     // добавить поиск
+}
+
+extension TrackersViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Обновляем collectionView при изменении данных
+        collectionView.reloadData()
+    }
 }

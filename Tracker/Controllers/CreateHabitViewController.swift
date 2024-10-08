@@ -2,10 +2,29 @@ import UIKit
 
 final class CreateHabitViewController: UIViewController, UITextViewDelegate, ScheduleViewControllerDelegate {
 
+    init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Не удалось получить AppDelegate")
+        }
+        
+        self.trackerStore = TrackerStore(context: appDelegate.persistentContainer.viewContext)
+        self.categoryStore = TrackerCategoryStore(context: appDelegate.persistentContainer.viewContext)
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var onTrackerAdded: (() -> Void)?
     
     private var selectedDays: [DayOfWeek] = []
     private let createHabitView = CreateHabitView()
+    
+    private let trackerStore: TrackerStore
+    private let categoryStore: TrackerCategoryStore
+    
     private let maxNameLength = 38
     private var optionsTopConstraint: NSLayoutConstraint?
     private var selectedCategory: String?
@@ -36,7 +55,13 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
     private func setupNavigationBar() {
         navigationItem.hidesBackButton = true
         navigationItem.title = "Новая привычка"
-        navigationController?.navigationBar.titleTextAttributes = [
+        
+        guard let navigationBar = navigationController?.navigationBar else {
+            print("NavigationController отсутствует")
+            return
+        }
+        
+        navigationBar.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: UIColor.black,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .bold)
         ]
@@ -111,12 +136,12 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
 
         let selectedDaysStrings = selectedDays.map { $0.rawValue }
         
-        guard let category = CoreDataManager.shared.addCategoryEntity(title: selectedCategory) else {
+        guard let category = categoryStore.addCategory(title: selectedCategory) else {
             print("не получается создать категорию")
             return
         }
-        
-        guard let tracker = CoreDataManager.shared.addTrackerEntity(name: trackerName, color: color, emoji: emoji, schedule: selectedDaysStrings, category: category) else {
+
+        guard let tracker = trackerStore.addTracker(name: trackerName, color: color, emoji: emoji, schedule: selectedDaysStrings, category: category) else {
             print("не получилось создать привычку")
             return
         }
@@ -154,7 +179,13 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
         } else {
             // Если категория не выбрана, выбираем ее
             selectedCategory = "Новое"
-            createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
+            //createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
+            if let selectedCategory = selectedCategory {
+                createHabitView.updateSelectedCategoryLabel(with: selectedCategory)
+            } else {
+                createHabitView.updateSelectedCategoryLabel(with: "")
+            }
+
         }
         updateCreateButtonState()
     }
@@ -170,6 +201,9 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
         }
         // Преобразуем строки обратно в DayOfWeek и сохраняем выбранные дни
         selectedDays = days.compactMap { DayOfWeek(rawValue: $0) }
+        
+        // Обновляем состояние кнопки
+        updateCreateButtonState()
     }
 
     private func updateOptionsContainerSpacing(hasError: Bool) {
@@ -213,17 +247,6 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
     }
 
     // MARK: - Вспомогательные методы
-    
-//    private func updateCreateButtonState() {
-//        let isNameEntered = !(createHabitView.trackerNameTextView.text?.isEmpty ?? true)
-//        let isCategorySelected = selectedCategory != nil
-//        let isSelectedDays = selectedDays.count >= 1
-//        let isEmojiSelected = !emoji.isEmpty // Проверка на выбор эмодзи
-//        
-//        // Кнопка активируется только если введено название, выбрана категория, расписание и эмодзи
-//        createHabitView.createButton.isEnabled = isNameEntered && isCategorySelected && isSelectedDays && isEmojiSelected
-//        createHabitView.createButton.backgroundColor = createHabitView.createButton.isEnabled ? UIColor(named: "createButtonActive") : UIColor(named: "createButtonNone")
-//    }
     
     private func updateCreateButtonState() {
         print("Обновление состояния кнопки 'Создать'")

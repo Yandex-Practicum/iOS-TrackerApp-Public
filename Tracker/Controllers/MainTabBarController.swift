@@ -11,14 +11,17 @@ final class MainTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let trackersImage = UIImage(systemName: "record.circle.fill") ?? UIImage()
+        let statisticsImage = UIImage(systemName: "hare.fill") ?? UIImage()
 
         let trackersVC = TrackersViewController()
         let trackersNav = UINavigationController(rootViewController: trackersVC)
-        trackersNav.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(systemName: "record.circle.fill"), tag: 0)
+        trackersNav.tabBarItem = UITabBarItem(title: "Трекеры", image: trackersImage, tag: 0)
 
         let statisticsVC = UIViewController()  // Это будет экран статистики
         statisticsVC.view.backgroundColor = .white
-        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(systemName: "hare.fill"), tag: 1)
+        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: statisticsImage, tag: 1)
 
         viewControllers = [trackersNav, statisticsVC]
         

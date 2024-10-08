@@ -144,31 +144,61 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Настройка ячейки
     
+//    func configure(with tracker: Tracker, isCompleted: Bool, completedCount: Int, isFutureDate: Bool) {
+//        backgroundCardView.backgroundColor = tracker.color
+//        emojiLabel.text = tracker.emoji
+//        trackerNameLabel.text = tracker.name
+//        actionButton.backgroundColor = tracker.color
+//        
+//        counterLabel.text = "\(completedCount) дней"
+//        
+//        if isFutureDate {
+//            actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+//            actionButton.isUserInteractionEnabled = false
+//            actionButton.alpha = 0.5
+//            actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
+//        } else {
+//            if isCompleted {
+//                actionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+//                actionButton.isUserInteractionEnabled = false
+//                actionButton.alpha = 0.5
+//                actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
+//            } else {
+//                actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+//                actionButton.isUserInteractionEnabled = true
+//                actionButton.alpha = 1.0
+//                actionButton.backgroundColor = tracker.color
+//            }
+//        }
+//    }
+    
     func configure(with tracker: Tracker, isCompleted: Bool, completedCount: Int, isFutureDate: Bool) {
         backgroundCardView.backgroundColor = tracker.color
         emojiLabel.text = tracker.emoji
         trackerNameLabel.text = tracker.name
         actionButton.backgroundColor = tracker.color
-        
+
         counterLabel.text = "\(completedCount) дней"
-        
+
         if isFutureDate {
+            // Если выбранная дата в будущем, трекер нельзя выполнить
             actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
             actionButton.isUserInteractionEnabled = false
             actionButton.alpha = 0.5
             actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
+        } else if isCompleted {
+            // Если трекер уже выполнен в выбранный день, кнопка становится недоступной
+            actionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            actionButton.isUserInteractionEnabled = false
+            actionButton.alpha = 0.5
+            actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
         } else {
-            if isCompleted {
-                actionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-                actionButton.isUserInteractionEnabled = false
-                actionButton.alpha = 0.5
-                actionButton.backgroundColor = tracker.color.withAlphaComponent(0.5)
-            } else {
-                actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
-                actionButton.isUserInteractionEnabled = true
-                actionButton.alpha = 1.0
-                actionButton.backgroundColor = tracker.color
-            }
+            // Если трекер не выполнен, кнопка активна
+            actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            actionButton.isUserInteractionEnabled = true
+            actionButton.alpha = 1.0
+            actionButton.backgroundColor = tracker.color
         }
     }
+
 }
