@@ -6,7 +6,7 @@ final class TrackerService: NSObject {
     private let trackerStore: TrackerStore
     private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
-    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>?
     
     // Замыкание для обновления данных при изменении
     var onTrackersUpdated: (() -> Void)?
@@ -31,20 +31,24 @@ final class TrackerService: NSObject {
         )
         
         // Назначаем делегат, который уведомляет об изменениях
-        fetchedResultsController.delegate = self
+        fetchedResultsController?.delegate = self
         
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedResultsController?.performFetch()
         } catch {
             print("Ошибка при загрузке трекеров: \(error)")
         }
     }
         
         func fetchAllTrackers() -> [TrackerEntity] {
-            return fetchedResultsController.fetchedObjects ?? []
+            return fetchedResultsController?.fetchedObjects ?? []
         }
             
     func performFetch() {
+        guard let fetchedResultsController = fetchedResultsController else {
+            print("fetchedResultsController не был инициализирован")
+            return
+        }
         do {
             try fetchedResultsController.performFetch()
         } catch {
