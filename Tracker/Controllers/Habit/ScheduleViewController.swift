@@ -86,7 +86,12 @@ final class ScheduleViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath) as! ScheduleCell
+        //let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath) as! ScheduleCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath) as? ScheduleCell else {
+            // Возвращаем пустую ячейку или создаем новую, чтобы предотвратить падение приложения
+            return UITableViewCell()
+        }
+        
         let day = daysOfWeek[indexPath.row]
         // Показываем полное название дня недели
         cell.configure(with: day.fullName, isSelected: selectedDays.contains(day), isFirst: indexPath.row == 0)

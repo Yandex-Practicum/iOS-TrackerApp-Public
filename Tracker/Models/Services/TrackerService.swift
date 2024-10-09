@@ -1,68 +1,56 @@
 import UIKit
 import CoreData
 
-final class TrackerService {
+final class TrackerService: NSObject {
     
     private let trackerStore: TrackerStore
     private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
+    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>!
     
+    // Замыкание для обновления данных при изменении
+    var onTrackersUpdated: (() -> Void)?
+        
     init(context: NSManagedObjectContext) {
         self.trackerStore = TrackerStore(context: context)
         self.categoryStore = TrackerCategoryStore(context: context)
         self.recordStore = TrackerRecordStore(context: context)
+        super.init()
+        setupFetchedResultsController(context: context)
     }
-
-    // Преобразование TrackerEntity в Tracker
-    func tracker(from entity: TrackerEntity) -> Tracker? {
-        guard let id = entity.id,
-              let name = entity.name,
-              let colorData = entity.color,
-              //let color = UIColor.fromData(colorData),
-              let color = entity.color as? UIColor,
-              let emoji = entity.emoji,
-              let schedule = entity.schedule as? [String] else {
-            return nil
+        
+    private func setupFetchedResultsController(context: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        
+        // Назначаем делегат, который уведомляет об изменениях
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Ошибка при загрузке трекеров: \(error)")
         }
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
     }
-
-    // Получение трекеров для конкретной даты
-//    func fetchTrackers(for date: Date) -> (trackersByCategory: [TrackerCategory], completedTrackers: [UUID: Bool], completionCounts: [UUID: Int]) {
-//        let dayOfWeek = getDayOfWeek(from: date)
-//        let trackers = trackerStore.fetchAllTrackers()
-//        
-//        // Получаем все записи о выполнении на указанную дату
-//        let completedRecords = recordStore.fetchRecords(for: date)
-//        
-//        var categoryDict: [String: [Tracker]] = [:]
-//        var completedTrackers: [UUID: Bool] = [:]
-//        var completionCounts: [UUID: Int] = [:]
-//        
-//        for tracker in trackers {
-//            if tracker.schedule.contains(dayOfWeek) {
-//                let categoryTitle = categoryStore.fetchAllCategories().first(where: { category in
-//                    category.trackers.contains(where: { $0.id == tracker.id })
-//                })?.title ?? "Без категории"
-//                
-//                categoryDict[categoryTitle, default: []].append(tracker)
-//                
-//                // Проверяем, есть ли запись для трекера на эту дату
-//                let isCompleted = completedRecords.contains { $0.trackerID == tracker.id }
-//                completedTrackers[tracker.id] = isCompleted
-//                
-//                let completionCount = recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
-//                completionCounts[tracker.id] = completionCount
-//            }
-//        }
-//        
-//        var trackerCategories: [TrackerCategory] = []
-//        for (category, trackers) in categoryDict {
-//            trackerCategories.append(TrackerCategory(title: category, trackers: trackers))
-//        }
-//        
-//        return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers, completionCounts: completionCounts)
-//    }
+        
+        func fetchAllTrackers() -> [TrackerEntity] {
+            return fetchedResultsController.fetchedObjects ?? []
+        }
+            
+    func performFetch() {
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Ошибка при загрузке трекеров: \(error)")
+        }
+    }
     
     // Получение трекеров для конкретной даты
     func fetchTrackers(for date: Date) -> (trackersByCategory: [TrackerCategory], completedTrackers: [UUID: Bool], completionCounts: [UUID: Int]) {
@@ -145,5 +133,13 @@ final class TrackerService {
     
     func countCompleted(for tracker: Tracker) -> Int {
         return recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
+    }
+}
+
+// Расширение для работы с делегатом NSFetchedResultsController
+extension TrackerService: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Вызываем замыкание при изменении данных
+        onTrackersUpdated?()
     }
 }

@@ -3,12 +3,27 @@ import CoreData
 
 final class TrackersViewController: UIViewController {
 
+    // MARK: - Properties
+    private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let trackerService: TrackerService
+    
     init() {
+        // Получаем context из AppDelegate
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             fatalError("Невозможно получить AppDelegate")
         }
-        self.trackerService = TrackerService(context: appDelegate.persistentContainer.viewContext)
+        
+        let context = appDelegate.persistentContainer.viewContext
+        
+        self.trackerService = TrackerService(context: context)
         super.init(nibName: nil, bundle: nil) // Вызов инициализатора родительского класса
+        
+        // Настраиваем замыкание на обновление данных
+        self.trackerService.onTrackersUpdated = { [weak self] in
+            guard let self = self else { return }
+            self.loadTrackers(for: self.datePicker.date)  // Обновляем трекеры, когда они изменяются
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -84,12 +99,6 @@ final class TrackersViewController: UIViewController {
         return collectionView
     }()
 
-    // MARK: - Properties
-    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>!
-    private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let trackerService: TrackerService
-
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -101,7 +110,6 @@ final class TrackersViewController: UIViewController {
         setupCollectionView()
         setupActivityIndicator()
         loadTrackers(for: Date())
-        setupFetchedResultsController()
     }
 
     // MARK: - Setup Methods
@@ -220,43 +228,20 @@ final class TrackersViewController: UIViewController {
     }
 
     // MARK: - Загрузка данных
-
     private func loadTrackers(for date: Date) {
         activityIndicator.startAnimating()
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
+            
+            // Получаем обновленные трекеры для конкретной даты
             let (trackerCategories, completedTrackers, completedCount) = self.trackerService.fetchTrackers(for: date)
+            
             DispatchQueue.main.async {
                 self.trackerCategories = (trackerCategories, completedTrackers, completedCount)
-                self.collectionView.reloadData()
+                self.collectionView.reloadData()  // Перезагружаем коллекцию с новыми данными
                 self.updatePlaceholderVisibility()
                 self.activityIndicator.stopAnimating()
             }
-        }
-    }
-    
-    private func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Невозможно получить AppDelegate")
-        }
-        
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: appDelegate.persistentContainer.viewContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        
-        fetchedResultsController.delegate = self
-
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print("Ошибка при загрузке трекеров: \(error)")
         }
     }
 
@@ -386,11 +371,4 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: UISearchBarDelegate {
     // добавить поиск
-}
-
-extension TrackersViewController: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Обновляем collectionView при изменении данных
-        collectionView.reloadData()
-    }
 }
