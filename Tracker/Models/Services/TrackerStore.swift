@@ -21,7 +21,8 @@ final class TrackerStore {
         let trackerEntity = TrackerEntity(context: context)
         trackerEntity.id = UUID()
         trackerEntity.name = name
-        trackerEntity.color = color.toData()
+        //trackerEntity.color = color.toData()
+        trackerEntity.color = color
         trackerEntity.emoji = emoji
         trackerEntity.schedule = schedule as NSObject
 
@@ -56,7 +57,8 @@ final class TrackerStore {
         guard let id = entity.id,
               let name = entity.name,
               let colorData = entity.color,
-              let color = UIColor.fromData(colorData),
+              //let color = UIColor.fromData(colorData),
+              let color = entity.color as? UIColor,
               let emoji = entity.emoji,
               let schedule = entity.schedule as? [String] else {
             return nil
