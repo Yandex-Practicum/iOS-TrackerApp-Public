@@ -1,10 +1,3 @@
-//
-//  TrackerRecordStore.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 08.10.2024.
-//
-
 import CoreData
 
 final class TrackerRecordStore {
@@ -24,7 +17,8 @@ final class TrackerRecordStore {
             if let trackerEntity = try context.fetch(fetchRequest).first {
                 let recordEntity = TrackerRecordEntity(context: context)
                 recordEntity.tracker = trackerEntity
-                recordEntity.date = date
+                //recordEntity.date = date
+                recordEntity.date = Calendar.current.startOfDay(for: date)
 
                 try context.save()
                 print("В Cored Data была выполнена запись о выполнении: \(TrackerRecord(trackerID: tracker.id, date: date))")

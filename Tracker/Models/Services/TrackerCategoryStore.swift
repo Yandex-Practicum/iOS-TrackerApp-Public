@@ -1,10 +1,3 @@
-//
-//  TrackerCategoryStore.swift
-//  Tracker
-//
-//  Created by Sergey Ivanov on 08.10.2024.
-//
-
 import CoreData
 
 final class TrackerCategoryStore {

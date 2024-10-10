@@ -1,59 +1,28 @@
 import UIKit
-import CoreData
 
 final class TrackerService: NSObject {
     
     private let trackerStore: TrackerStore
     private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
-    private var fetchedResultsController: NSFetchedResultsController<TrackerEntity>?
     
     // Замыкание для обновления данных при изменении
     var onTrackersUpdated: (() -> Void)?
         
-    init(context: NSManagedObjectContext) {
-        self.trackerStore = TrackerStore(context: context)
-        self.categoryStore = TrackerCategoryStore(context: context)
-        self.recordStore = TrackerRecordStore(context: context)
+    init(trackerStore: TrackerStore, categoryStore: TrackerCategoryStore, recordStore: TrackerRecordStore) {
+        self.trackerStore = trackerStore
+        self.categoryStore = categoryStore
+        self.recordStore = recordStore
         super.init()
-        setupFetchedResultsController(context: context)
-    }
         
-    private func setupFetchedResultsController(context: NSManagedObjectContext) {
-        let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        
-        // Назначаем делегат, который уведомляет об изменениях
-        fetchedResultsController?.delegate = self
-        
-        do {
-            try fetchedResultsController?.performFetch()
-        } catch {
-            print("Ошибка при загрузке трекеров: \(error)")
+        // Подписываемся на изменения данных из TrackerStore
+        trackerStore.onTrackersChanged = { [weak self] in
+            self?.onTrackersUpdated?()
         }
     }
-        
-        func fetchAllTrackers() -> [TrackerEntity] {
-            return fetchedResultsController?.fetchedObjects ?? []
-        }
-            
-    func performFetch() {
-        guard let fetchedResultsController = fetchedResultsController else {
-            print("fetchedResultsController не был инициализирован")
-            return
-        }
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print("Ошибка при загрузке трекеров: \(error)")
-        }
+    
+    func fetchAllTrackers() -> [Tracker] {
+        return trackerStore.fetchAllTrackers()
     }
     
     // Получение трекеров для конкретной даты
@@ -82,7 +51,8 @@ final class TrackerService: NSObject {
                 
                 if let lastCompletionDate = allRecordsForTracker.last?.date {
                     // Если нерегулярное событие завершено, отображаем только в день завершения
-                    if lastCompletionDate == date {
+                    //if lastCompletionDate == date {
+                    if Calendar.current.isDate(lastCompletionDate, inSameDayAs: date) {
                         addToCategory(tracker: tracker, categoryDict: &categoryDict, completedTrackers: &completedTrackers, isCompleted: true)
                     }
                 } else {
@@ -104,7 +74,6 @@ final class TrackerService: NSObject {
         return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers, completionCounts: completionCounts)
     }
 
-    
     private func addToCategory(tracker: Tracker, categoryDict: inout [String: [Tracker]], completedTrackers: inout [UUID: Bool], isCompleted: Bool) {
         let categoryTitle = categoryStore.fetchAllCategories().first(where: { category in
             category.trackers.contains(where: { $0.id == tracker.id })
@@ -137,13 +106,5 @@ final class TrackerService: NSObject {
     
     func countCompleted(for tracker: Tracker) -> Int {
         return recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
-    }
-}
-
-// Расширение для работы с делегатом NSFetchedResultsController
-extension TrackerService: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Вызываем замыкание при изменении данных
-        onTrackersUpdated?()
     }
 }

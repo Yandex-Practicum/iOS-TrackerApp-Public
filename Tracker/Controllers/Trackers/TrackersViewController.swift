@@ -1,26 +1,22 @@
 import UIKit
-import CoreData
 
 final class TrackersViewController: UIViewController {
 
     // MARK: - Properties
     private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let trackerService: TrackerService
+    private var trackerService: TrackerService?
     
     init() {
-        // Получаем context из AppDelegate
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Невозможно получить AppDelegate")
-        }
-        
-        let context = appDelegate.persistentContainer.viewContext
-        
-        self.trackerService = TrackerService(context: context)
         super.init(nibName: nil, bundle: nil) // Вызов инициализатора родительского класса
         
+        // Получаем ссылку на AppDelegate и извлекаем trackerService
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            self.trackerService = appDelegate.trackerService
+        }
+        
         // Настраиваем замыкание на обновление данных
-        self.trackerService.onTrackersUpdated = { [weak self] in
+        self.trackerService?.onTrackersUpdated = { [weak self] in
             guard let self = self else { return }
             self.loadTrackers(for: self.datePicker.date)  // Обновляем трекеры, когда они изменяются
         }
@@ -234,7 +230,12 @@ final class TrackersViewController: UIViewController {
             guard let self else { return }
             
             // Получаем обновленные трекеры для конкретной даты
-            let (trackerCategories, completedTrackers, completedCount) = self.trackerService.fetchTrackers(for: date)
+            guard let (trackerCategories, completedTrackers, completedCount) = self.trackerService?.fetchTrackers(for: date) else {
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating() // Останавливаем индикатор, если данные не были загружены
+                }
+                return
+            }
             
             DispatchQueue.main.async {
                 self.trackerCategories = (trackerCategories, completedTrackers, completedCount)
@@ -307,7 +308,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.didTapActionButton = { [weak self] in
             guard let self = self else { return }
             // Обновляем статус трекера
-            self.trackerService.completeTracker(tracker, on: self.datePicker.date)
+            self.trackerService?.completeTracker(tracker, on: self.datePicker.date)
             self.loadTrackers(for: self.datePicker.date)  // Перезагружаем трекеры
         }
         
