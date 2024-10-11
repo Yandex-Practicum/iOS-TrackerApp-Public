@@ -14,7 +14,15 @@ final class SplashViewController: UIViewController {
         
         view.backgroundColor = .launchScreenBackground
 
-        let logoImageView = UIImageView(image: UIImage(named: "logo"))
+        let logoImageView = UIImageView()
+        
+        if let logoImage = UIImage(named: "logo") {
+            logoImageView.image = logoImage
+        } else {
+            print("Ошибка: изображение 'logo' не найдено")
+        }
+
+//        let logoImageView = UIImageView(image: UIImage(named: "logo"))
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoImageView)
@@ -29,13 +37,24 @@ final class SplashViewController: UIViewController {
         }
     }
 
+//    private func goToMainScreen() {
+//        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+//           let window = sceneDelegate.window {
+//            let tabBarController = MainTabBarController()
+//            window.rootViewController = tabBarController
+//            window.makeKeyAndVisible()
+//        }
+//    }
     private func goToMainScreen() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-           let window = sceneDelegate.window {
-            let tabBarController = MainTabBarController()
-            window.rootViewController = tabBarController
-            window.makeKeyAndVisible()
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+              let window = sceneDelegate.window else {
+            print("Ошибка: не удалось получить SceneDelegate или window")
+            return
         }
+
+        let tabBarController = MainTabBarController()
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
     }
 }
 

@@ -2,6 +2,30 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
 
+    // MARK: - Properties
+    private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private var trackerService: TrackerService?
+    
+    init() {
+        super.init(nibName: nil, bundle: nil) // Вызов инициализатора родительского класса
+        
+        // Получаем ссылку на AppDelegate и извлекаем trackerService
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            self.trackerService = appDelegate.trackerService
+        }
+        
+        // Настраиваем замыкание на обновление данных
+        self.trackerService?.onTrackersUpdated = { [weak self] in
+            guard let self = self else { return }
+            self.loadTrackers(for: self.datePicker.date)  // Обновляем трекеры, когда они изменяются
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI Elements
 
     private lazy var datePicker: UIDatePicker = {
@@ -70,12 +94,6 @@ final class TrackersViewController: UIViewController {
         collectionView.backgroundColor = .clear
         return collectionView
     }()
-
-    // MARK: - Properties
-
-    private var trackerCategories: ([TrackerCategory], [UUID: Bool], [UUID: Int]) = ([], [:], [:])
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let trackerService = TrackerService()
 
     // MARK: - View Lifecycle
 
@@ -162,12 +180,17 @@ final class TrackersViewController: UIViewController {
             addButton.bottomAnchor.constraint(equalTo: addButtonContainer.bottomAnchor)
         ])
 
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.addSubview(addButtonContainer)
+        guard let navigationBar = navigationController?.navigationBar else {
+            print("Navigation bar не найден")
+            return
+        }
+        
+        navigationBar.addSubview(addButtonContainer)
         addButtonContainer.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            addButtonContainer.leadingAnchor.constraint(equalTo: navigationBar!.leadingAnchor, constant: 6),
-            addButtonContainer.centerYAnchor.constraint(equalTo: navigationBar!.centerYAnchor)
+            addButtonContainer.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 6),
+            addButtonContainer.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor)
         ])
 
         let datePickerContainer = UIBarButtonItem(customView: datePicker)
@@ -201,15 +224,22 @@ final class TrackersViewController: UIViewController {
     }
 
     // MARK: - Загрузка данных
-
     private func loadTrackers(for date: Date) {
         activityIndicator.startAnimating()
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
-            let (trackerCategories, completedTrackers, completedCount) = self.trackerService.fetchTrackers(for: date)
+            
+            // Получаем обновленные трекеры для конкретной даты
+            guard let (trackerCategories, completedTrackers, completedCount) = self.trackerService?.fetchTrackers(for: date) else {
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating() // Останавливаем индикатор, если данные не были загружены
+                }
+                return
+            }
+            
             DispatchQueue.main.async {
                 self.trackerCategories = (trackerCategories, completedTrackers, completedCount)
-                self.collectionView.reloadData()
+                self.collectionView.reloadData()  // Перезагружаем коллекцию с новыми данными
                 self.updatePlaceholderVisibility()
                 self.activityIndicator.stopAnimating()
             }
@@ -278,7 +308,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.didTapActionButton = { [weak self] in
             guard let self = self else { return }
             // Обновляем статус трекера
-            self.trackerService.completeTracker(tracker, on: self.datePicker.date)
+            self.trackerService?.completeTracker(tracker, on: self.datePicker.date)
             self.loadTrackers(for: self.datePicker.date)  // Перезагружаем трекеры
         }
         

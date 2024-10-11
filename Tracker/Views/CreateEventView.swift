@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateHabitView: UIView {
+final class CreateEventView: UIView {
 
     var onEmojiSelected: ((String) -> Void)?
     private var selectedEmoji: String?
@@ -79,12 +79,12 @@ final class CreateHabitView: UIView {
         return view
     }()
 
-    private lazy var separatorLine: UIView = {
-        let view = UIView()
-        view.backgroundColor = .lightGray
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+//    private lazy var separatorLine: UIView = {
+//        let view = UIView()
+//        view.backgroundColor = .lightGray
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        return view
+//    }()
 
     lazy var categoryView: UIView = {
         let view = UIView()
@@ -103,49 +103,16 @@ final class CreateHabitView: UIView {
 
     private lazy var selectedCategoryLabel: UILabel = {
         let label = UILabel()
-        label.text = "" // Изначально пусто
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .gray
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.isHidden = true // Скрыт по умолчанию
+        label.isHidden = true
         return label
     }()
 
     private lazy var categoryChevronImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "arrow_right"))
-        imageView.tintColor = .systemGray
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-
-    lazy var scheduleView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    private lazy var scheduleTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Расписание"
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private lazy var selectedDaysLabel: UILabel = {
-        let label = UILabel()
-        label.text = "" // Изначально пусто
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = .gray
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isHidden = true // Скрыт по умолчанию
-        return label
-    }()
-
-    private lazy var scheduleChevronImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "arrow_right"))
         imageView.tintColor = .systemGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -308,40 +275,18 @@ final class CreateHabitView: UIView {
         categoryView.addSubview(selectedCategoryLabel)
         categoryView.addSubview(categoryChevronImageView)
 
-        // Добавляем разделитель
-        optionsContainer.addSubview(separatorLine)
-
-        // Добавляем элементы расписания
-        optionsContainer.addSubview(scheduleView)
-        scheduleView.addSubview(scheduleTitleLabel)
-        scheduleView.addSubview(selectedDaysLabel)
-        scheduleView.addSubview(scheduleChevronImageView)
-
         // Настраиваем констрейнты для optionsContainer и его элементов
         NSLayoutConstraint.activate([
             optionsContainer.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 32),
             optionsContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             optionsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            optionsContainer.heightAnchor.constraint(equalToConstant: 150),
+            optionsContainer.heightAnchor.constraint(equalToConstant: 75),
 
             // Категория
             categoryView.topAnchor.constraint(equalTo: optionsContainer.topAnchor),
             categoryView.leadingAnchor.constraint(equalTo: optionsContainer.leadingAnchor),
             categoryView.trailingAnchor.constraint(equalTo: optionsContainer.trailingAnchor),
             categoryView.heightAnchor.constraint(equalToConstant: 75),
-
-            // Разделитель
-            separatorLine.topAnchor.constraint(equalTo: categoryView.bottomAnchor),
-            separatorLine.leadingAnchor.constraint(equalTo: optionsContainer.leadingAnchor, constant: 16),
-            separatorLine.trailingAnchor.constraint(equalTo: optionsContainer.trailingAnchor, constant: -16),
-            separatorLine.heightAnchor.constraint(equalToConstant: 1),
-
-            // Расписание
-            scheduleView.topAnchor.constraint(equalTo: separatorLine.bottomAnchor),
-            scheduleView.leadingAnchor.constraint(equalTo: optionsContainer.leadingAnchor),
-            scheduleView.trailingAnchor.constraint(equalTo: optionsContainer.trailingAnchor),
-            scheduleView.bottomAnchor.constraint(equalTo: optionsContainer.bottomAnchor),
-            scheduleView.heightAnchor.constraint(equalToConstant: 75),
         ])
 
         // Констрейнты для categoryLabel и selectedCategoryLabel
@@ -361,25 +306,6 @@ final class CreateHabitView: UIView {
             categoryChevronImageView.centerYAnchor.constraint(equalTo: categoryView.centerYAnchor),
             categoryChevronImageView.widthAnchor.constraint(equalToConstant: 24),
             categoryChevronImageView.heightAnchor.constraint(equalToConstant: 24),
-        ])
-
-        // Констрейнты для расписания
-        scheduleTitleLabelTopConstraint = scheduleTitleLabel.topAnchor.constraint(equalTo: scheduleView.topAnchor, constant: 27)
-        scheduleTitleLabelTopConstraint.isActive = true
-
-        NSLayoutConstraint.activate([
-            scheduleTitleLabel.leadingAnchor.constraint(equalTo: scheduleView.leadingAnchor, constant: 16),
-            scheduleTitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: scheduleChevronImageView.leadingAnchor, constant: -8),
-
-            selectedDaysLabel.topAnchor.constraint(equalTo: scheduleTitleLabel.bottomAnchor, constant: 2),
-            selectedDaysLabel.leadingAnchor.constraint(equalTo: scheduleView.leadingAnchor, constant: 16),
-            selectedDaysLabel.trailingAnchor.constraint(lessThanOrEqualTo: scheduleChevronImageView.leadingAnchor, constant: -8),
-            selectedDaysLabel.bottomAnchor.constraint(lessThanOrEqualTo: scheduleView.bottomAnchor, constant: -8),
-
-            scheduleChevronImageView.trailingAnchor.constraint(equalTo: scheduleView.trailingAnchor, constant: -16),
-            scheduleChevronImageView.centerYAnchor.constraint(equalTo: scheduleView.centerYAnchor),
-            scheduleChevronImageView.widthAnchor.constraint(equalToConstant: 24),
-            scheduleChevronImageView.heightAnchor.constraint(equalToConstant: 24),
         ])
         
         // Adding emoji section
@@ -435,22 +361,6 @@ final class CreateHabitView: UIView {
     
     // MARK: - Methods
 
-    func updateSelectedDaysLabel(with text: String) {
-        selectedDaysLabel.text = text
-        let isScheduleSelected = !text.isEmpty
-
-        selectedDaysLabel.isHidden = !isScheduleSelected
-
-        // Обновляем верхний отступ для scheduleTitleLabel
-        scheduleTitleLabelTopConstraint.constant = isScheduleSelected ? 15 : 27
-
-        // Анимируем изменения
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            guard let self else { return }
-            self.layoutIfNeeded()
-        }
-    }
-
     func updateSelectedCategoryLabel(with text: String) {
         selectedCategoryLabel.text = text
         let isCategorySelected = !text.isEmpty
@@ -466,7 +376,7 @@ final class CreateHabitView: UIView {
     }
 }
 
-extension CreateHabitView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension CreateEventView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     // Набор эмодзи
     private var emojis: [String] {

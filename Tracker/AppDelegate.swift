@@ -12,7 +12,8 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var trackerService: TrackerService?
+    
     // Добавляем контейнер Core Data
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "TrackerModel")
@@ -39,6 +40,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Регистрация трансформера
+        ValueTransformer.setValueTransformer(UIColorTransformer(), forName: NSValueTransformerName("UIColorTransformer"))
+        ValueTransformer.setValueTransformer(ScheduleTransformer(), forName: NSValueTransformerName("ScheduleTransformer"))
+        
+        let context = persistentContainer.viewContext
+        
+        // Инициализируем хранилища
+        let trackerStore = TrackerStore(context: context)
+        let categoryStore = TrackerCategoryStore(context: context)
+        let recordStore = TrackerRecordStore(context: context)
+
+        // Инициализируем сервис
+        trackerService = TrackerService(trackerStore: trackerStore, categoryStore: categoryStore, recordStore: recordStore)
+        
         return true
     }
 

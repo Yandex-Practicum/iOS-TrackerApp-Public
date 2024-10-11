@@ -38,7 +38,13 @@ final class CreateTrackerTypeViewController: UIViewController {
     private func setupNavigationBar() {
         navigationItem.hidesBackButton = true
         navigationItem.title = "Создание трекера"
-        navigationController?.navigationBar.titleTextAttributes = [
+        
+        guard let navigationBar = navigationController?.navigationBar else {
+            print("NavigationController отсутствует")
+            return
+        }
+        
+        navigationBar.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: UIColor.black,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .bold)
         ]
@@ -86,8 +92,16 @@ final class CreateTrackerTypeViewController: UIViewController {
     }
 
     @objc private func eventButtonTapped() {
-        print("Нерегулярное событие выбрано")
-        // переход на экран создания нерегулярного события
+        let createEventVC = CreateEventViewController()
+        
+        // Передаем замыкание дальше в CreateHabitViewController
+        createEventVC.onTrackerAdded = { [weak self] in
+            self?.onTrackerAdded?() // Вызываем замыкание из CreateTrackerTypeViewController
+        }
+        
+        let navigationController = UINavigationController(rootViewController: createEventVC)
+        navigationController.modalPresentationStyle = .pageSheet
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
