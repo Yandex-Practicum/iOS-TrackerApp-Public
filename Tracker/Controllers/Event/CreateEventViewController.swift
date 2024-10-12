@@ -151,25 +151,23 @@ final class CreateEventViewController: UIViewController, UITextViewDelegate {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-
+    
     @objc private func categoryTapped() {
-        if selectedCategory == "Новое" {
-            // Если категория уже выбрана, снимаем выбор
-            selectedCategory = nil
-            createEventView.updateSelectedCategoryLabel(with: "")
-        } else {
-            // Если категория не выбрана, выбираем ее
-            selectedCategory = "Новое"
-            //createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
-            if let selectedCategory = selectedCategory {
-                createEventView.updateSelectedCategoryLabel(with: selectedCategory)
-            } else {
-                createEventView.updateSelectedCategoryLabel(with: "")
-            }
-
+        let categoryStore = categoryStore
+        let categoryViewModel = CategoryViewModel(categoryStore: categoryStore)
+        let categoryViewController = CategoryViewController(viewModel: categoryViewModel, selectedCategory: selectedCategory)
+        
+        categoryViewController.onCategorySelected = { [weak self] selectedCategory in
+            print("Выбранная категория в CreateEventViewController: \(selectedCategory)")
+            self?.selectedCategory = selectedCategory
+            self?.createEventView.updateSelectedCategoryLabel(with: selectedCategory)
+            self?.updateCreateButtonState()
+            self?.navigationController?.popViewController(animated: true)
         }
-        updateCreateButtonState()
+        
+        navigationController?.pushViewController(categoryViewController, animated: true)
     }
+
 
     // MARK: - ScheduleViewControllerDelegate
 
@@ -219,10 +217,8 @@ final class CreateEventViewController: UIViewController, UITextViewDelegate {
         print("Обновление состояния кнопки 'Создать'")
         let isNameEntered = !(createEventView.trackerNameTextView.text?.isEmpty ?? true)
         let isCategorySelected = selectedCategory != nil
-        let isEmojiSelected = !emoji.isEmpty // Проверка на выбор эмодзи
-        let isColorSelected = color != UIColor(resource: .launchScreenBackground) // Проверка на выбор цвета
-        
-        // Кнопка активируется только если введено название, выбрана категория, расписание, эмодзи и цвет
+        let isEmojiSelected = !emoji.isEmpty
+        let isColorSelected = color != UIColor(resource: .launchScreenBackground)
         createEventView.createButton.isEnabled = isNameEntered && isCategorySelected && isEmojiSelected && isColorSelected
         print("Кнопка активна: \(createEventView.createButton.isEnabled)")
         createEventView.createButton.backgroundColor = createEventView.createButton.isEnabled ? UIColor(named: "createButtonActive") : UIColor(named: "createButtonNone")

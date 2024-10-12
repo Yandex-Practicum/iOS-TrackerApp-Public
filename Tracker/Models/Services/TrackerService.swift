@@ -41,27 +41,21 @@ final class TrackerService: NSObject {
             let isRegular = !tracker.schedule.isEmpty  // Регулярное событие, если расписание не пустое
             
             if isRegular {
-                // Логика для регулярных событий
                 if tracker.schedule.contains(dayOfWeek) {
                     addToCategory(tracker: tracker, categoryDict: &categoryDict, completedTrackers: &completedTrackers, isCompleted: completedRecords.contains { $0.trackerID == tracker.id })
                 }
             } else {
-                // Логика для нерегулярных событий
                 let allRecordsForTracker = recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }
                 
                 if let lastCompletionDate = allRecordsForTracker.last?.date {
-                    // Если нерегулярное событие завершено, отображаем только в день завершения
-                    //if lastCompletionDate == date {
                     if Calendar.current.isDate(lastCompletionDate, inSameDayAs: date) {
                         addToCategory(tracker: tracker, categoryDict: &categoryDict, completedTrackers: &completedTrackers, isCompleted: true)
                     }
                 } else {
-                    // Если событие еще не завершено, отображаем каждый день
                     addToCategory(tracker: tracker, categoryDict: &categoryDict, completedTrackers: &completedTrackers, isCompleted: false)
                 }
             }
             
-            // Подсчитываем количество выполнений трекера
             let completionCount = recordStore.fetchAllRecords().filter { $0.trackerID == tracker.id }.count
             completionCounts[tracker.id] = completionCount
         }
@@ -73,14 +67,24 @@ final class TrackerService: NSObject {
         
         return (trackersByCategory: trackerCategories, completedTrackers: completedTrackers, completionCounts: completionCounts)
     }
-
-    private func addToCategory(tracker: Tracker, categoryDict: inout [String: [Tracker]], completedTrackers: inout [UUID: Bool], isCompleted: Bool) {
-        let categoryTitle = categoryStore.fetchAllCategories().first(where: { category in
-            category.trackers.contains(where: { $0.id == tracker.id })
-        })?.title ?? "Без категории"
-        
-        categoryDict[categoryTitle, default: []].append(tracker)
-        completedTrackers[tracker.id] = isCompleted
+    
+    private func addToCategory(
+        tracker: Tracker,
+        categoryDict: inout [String: [Tracker]],
+        completedTrackers: inout [UUID: Bool],
+        isCompleted: Bool
+    ) {
+        // Получаем категорию через Core Data
+        if let categoryEntity = trackerStore.fetchCategoryForTracker(trackerID: tracker.id),
+           let categoryTitle = categoryEntity.title {
+            categoryDict[categoryTitle, default: []].append(tracker)
+            completedTrackers[tracker.id] = isCompleted
+        } else {
+            // Логируем и добавляем в категорию "Прочее", если категория не найдена
+            print("⚠️ Внимание: Трекер '\(tracker.name)' не привязан ни к одной категории.")
+            categoryDict["Прочее", default: []].append(tracker)
+            completedTrackers[tracker.id] = isCompleted
+        }
     }
 
     func completeTracker(_ tracker: Tracker, on date: Date) {

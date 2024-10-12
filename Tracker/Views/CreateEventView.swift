@@ -79,13 +79,6 @@ final class CreateEventView: UIView {
         return view
     }()
 
-//    private lazy var separatorLine: UIView = {
-//        let view = UIView()
-//        view.backgroundColor = .lightGray
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        return view
-//    }()
-
     lazy var categoryView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false

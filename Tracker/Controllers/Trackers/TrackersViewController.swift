@@ -234,6 +234,10 @@ final class TrackersViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.activityIndicator.stopAnimating() // Останавливаем индикатор, если данные не были загружены
                 }
+                print("Загруженные категории:")
+                for category in trackerCategories.0 {
+                    print("Категория: \(category.title), Трекеры: \(category.trackers.count)")
+                }
                 return
             }
             

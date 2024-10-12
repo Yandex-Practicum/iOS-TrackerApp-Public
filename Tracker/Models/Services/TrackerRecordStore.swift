@@ -17,11 +17,9 @@ final class TrackerRecordStore {
             if let trackerEntity = try context.fetch(fetchRequest).first {
                 let recordEntity = TrackerRecordEntity(context: context)
                 recordEntity.tracker = trackerEntity
-                //recordEntity.date = date
                 recordEntity.date = Calendar.current.startOfDay(for: date)
 
                 try context.save()
-                print("В Cored Data была выполнена запись о выполнении: \(TrackerRecord(trackerID: tracker.id, date: date))")
                 return TrackerRecord(trackerID: tracker.id, date: date)
             }
         } catch {
@@ -35,7 +33,6 @@ final class TrackerRecordStore {
         let fetchRequest: NSFetchRequest<TrackerRecordEntity> = TrackerRecordEntity.fetchRequest()
         do {
             let recordEntities = try context.fetch(fetchRequest)
-            print("Записи на дату : \(recordEntities.map { "\($0)" })")
             return recordEntities.compactMap { record(from: $0) }
         } catch {
             print("Ошибка при загрузке записей: \(error)")
@@ -55,7 +52,6 @@ final class TrackerRecordStore {
         
         do {
             let recordEntities = try context.fetch(fetchRequest)
-            print("Записи на дату \(date): \(recordEntities.map { "\($0.date ?? Date())" })")
             return recordEntities.compactMap { record(from: $0) }
         } catch {
             print("Ошибка при загрузке записей: \(error)")

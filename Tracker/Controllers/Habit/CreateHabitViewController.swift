@@ -146,9 +146,7 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
             return
         }
         
-        // Оповещаем, что был добавлен новый трекер
         onTrackerAdded?()
-        //dismiss(animated: true, completion: nil)
 
         // Закрываем оба экрана
         if let presentingVC = presentingViewController?.presentingViewController {
@@ -171,25 +169,41 @@ final class CreateHabitViewController: UIViewController, UITextViewDelegate, Sch
         present(navController, animated: true, completion: nil)
     }
 
+//    @objc private func categoryTapped() {
+//        if selectedCategory == "Новое" {
+//            // Если категория уже выбрана, снимаем выбор
+//            selectedCategory = nil
+//            createHabitView.updateSelectedCategoryLabel(with: "")
+//        } else {
+//            // Если категория не выбрана, выбираем ее
+//            selectedCategory = "Новое"
+//            //createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
+//            if let selectedCategory = selectedCategory {
+//                createHabitView.updateSelectedCategoryLabel(with: selectedCategory)
+//            } else {
+//                createHabitView.updateSelectedCategoryLabel(with: "")
+//            }
+//
+//        }
+//        updateCreateButtonState()
+//    }
+
     @objc private func categoryTapped() {
-        if selectedCategory == "Новое" {
-            // Если категория уже выбрана, снимаем выбор
-            selectedCategory = nil
-            createHabitView.updateSelectedCategoryLabel(with: "")
-        } else {
-            // Если категория не выбрана, выбираем ее
-            selectedCategory = "Новое"
-            //createHabitView.updateSelectedCategoryLabel(with: selectedCategory!)
-            if let selectedCategory = selectedCategory {
-                createHabitView.updateSelectedCategoryLabel(with: selectedCategory)
-            } else {
-                createHabitView.updateSelectedCategoryLabel(with: "")
-            }
-
+        let categoryStore = categoryStore
+        let categoryViewModel = CategoryViewModel(categoryStore: categoryStore)
+        let categoryViewController = CategoryViewController(viewModel: categoryViewModel, selectedCategory: selectedCategory)
+        
+        categoryViewController.onCategorySelected = { [weak self] selectedCategory in
+            print("Выбранная категория в CreateEventViewController: \(selectedCategory)")
+            self?.selectedCategory = selectedCategory
+            self?.createHabitView.updateSelectedCategoryLabel(with: selectedCategory)
+            self?.updateCreateButtonState()
+            self?.navigationController?.popViewController(animated: true)
         }
-        updateCreateButtonState()
+        
+        navigationController?.pushViewController(categoryViewController, animated: true)
     }
-
+    
     // MARK: - ScheduleViewControllerDelegate
     
     func didSelectDays(_ days: [String]) {
