@@ -16,6 +16,8 @@
 		1C3C40D72CB55CE9004BAD9B /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3C40D62CB55CE7004BAD9B /* TrackerCategoryStore.swift */; };
 		1C3C40D92CB55CF7004BAD9B /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3C40D82CB55CF5004BAD9B /* TrackerRecordStore.swift */; };
 		1C3C40DB2CB59C31004BAD9B /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3C40DA2CB59C2F004BAD9B /* CreateEventViewController.swift */; };
+		1C562B242CBC000D006CD2DA /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C562B232CBC0003006CD2DA /* OnboardingPageViewController.swift */; };
+		1C562B262CBC002B006CD2DA /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C562B252CBC001E006CD2DA /* OnboardingViewController.swift */; };
 		1C567E742C8882700023A2BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C567E732C8882700023A2BC /* AppDelegate.swift */; };
 		1C567E762C8882700023A2BC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C567E752C8882700023A2BC /* SceneDelegate.swift */; };
 		1C567E7D2C8882730023A2BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C567E7C2C8882730023A2BC /* Assets.xcassets */; };
@@ -52,6 +54,8 @@
 		1C3C40D62CB55CE7004BAD9B /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		1C3C40D82CB55CF5004BAD9B /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		1C3C40DA2CB59C2F004BAD9B /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
+		1C562B232CBC0003006CD2DA /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
+		1C562B252CBC001E006CD2DA /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		1C567E702C88826F0023A2BC /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C567E732C8882700023A2BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C567E752C8882700023A2BC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -114,6 +118,15 @@
 			path = Habit;
 			sourceTree = "<group>";
 		};
+		1C562B222CBBFFF2006CD2DA /* OnBorading */ = {
+			isa = PBXGroup;
+			children = (
+				1C562B252CBC001E006CD2DA /* OnboardingViewController.swift */,
+				1C562B232CBC0003006CD2DA /* OnboardingPageViewController.swift */,
+			);
+			path = OnBorading;
+			sourceTree = "<group>";
+		};
 		1C567E672C88826F0023A2BC = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +171,7 @@
 			children = (
 				1C860E2C2C8F2E9700A0D3BC /* SplashViewController.swift */,
 				1C860E312C8F313400A0D3BC /* MainTabBarController.swift */,
+				1C562B222CBBFFF2006CD2DA /* OnBorading */,
 				1CC6E61F2CB6709E00F55DB1 /* Trackers */,
 				1C3C40DC2CB59E8A004BAD9B /* Habit */,
 				1CC6E61E2CB6705300F55DB1 /* Event */,
@@ -326,6 +340,7 @@
 				1C567E742C8882700023A2BC /* AppDelegate.swift in Sources */,
 				1CC6E6232CB6974200F55DB1 /* UIColorTransformer.swift in Sources */,
 				1C3C40D72CB55CE9004BAD9B /* TrackerCategoryStore.swift in Sources */,
+				1C562B242CBC000D006CD2DA /* OnboardingPageViewController.swift in Sources */,
 				1C860E322C8F313400A0D3BC /* MainTabBarController.swift in Sources */,
 				1CCBC78B2C99A08C00124C53 /* TrackerCategoryHeader.swift in Sources */,
 				1CEA55F62C930CD6000580D7 /* ScheduleViewControllerDelegate.swift in Sources */,
@@ -344,6 +359,7 @@
 				1C3C40DB2CB59C31004BAD9B /* CreateEventViewController.swift in Sources */,
 				1CC6E6212CB6719B00F55DB1 /* CreateEventView.swift in Sources */,
 				1C06ED902C8B2C1300A5A5F4 /* TrackerModel.xcdatamodeld in Sources */,
+				1C562B262CBC002B006CD2DA /* OnboardingViewController.swift in Sources */,
 				1C06ED8B2C8B067B00A5A5F4 /* TrackerRecord.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

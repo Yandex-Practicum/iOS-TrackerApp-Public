@@ -18,8 +18,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Устанавливаем SplashViewController как начальный экран
         let splashVC = SplashViewController()
+        
+        splashVC.onSplashCompleted = { [weak self] in
+            self?.showInitialScreen() // Переход после завершения Splash
+        }
+        
         window?.rootViewController = splashVC
         window?.makeKeyAndVisible()
+    }
+    
+    private func showInitialScreen() {
+        let onboardingCompleted = UserDefaults.standard.bool(forKey: "onboardingCompleted")
+        
+        let rootViewController: UIViewController
+        if onboardingCompleted {
+            // Переход на главный экран, если онбординг завершен
+            rootViewController = UINavigationController(rootViewController: TrackersViewController())
+        } else {
+            // Показ онбординга
+            let onboardingVC = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+            rootViewController = onboardingVC
+        }
+        
+        // Анимация смены rootViewController
+        UIView.transition(with: window!, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.window?.rootViewController = rootViewController
+        }, completion: nil)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

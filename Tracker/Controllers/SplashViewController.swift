@@ -9,6 +9,8 @@ import UIKit
 
 final class SplashViewController: UIViewController {
 
+    var onSplashCompleted: (() -> Void)? // Замыкание для завершения
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,7 +24,6 @@ final class SplashViewController: UIViewController {
             print("Ошибка: изображение 'logo' не найдено")
         }
 
-//        let logoImageView = UIImageView(image: UIImage(named: "logo"))
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoImageView)
@@ -33,18 +34,10 @@ final class SplashViewController: UIViewController {
         ])
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.goToMainScreen()
+            self.onSplashCompleted?()
         }
     }
 
-//    private func goToMainScreen() {
-//        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-//           let window = sceneDelegate.window {
-//            let tabBarController = MainTabBarController()
-//            window.rootViewController = tabBarController
-//            window.makeKeyAndVisible()
-//        }
-//    }
     private func goToMainScreen() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
               let window = sceneDelegate.window else {
